@@ -1,17 +1,24 @@
-from datetime import datetime
-
+from typing import List
+from fastapi import UploadFile
 import numpy as np
 from obspy import read
 from scipy.io.wavfile import write
 
+from models import UploadEvent, EventFilter
+import repository
+
+
+def list_events(filter: list):
+    event_filter = EventFilter(**dict(filter))
+    return repository.list_events(event_filter)
 
 def get_event(event_id: str):
-    return ''
+    return repository.get_event_by_id(event_id)
 
-def list_events():
-    return ''
+def save_event(event: UploadEvent):
+    repository.save_event(event)
 
-def save_event():
+def process_event(file: UploadFile):
     return ''
 
 def listen_event(event_id: str):
@@ -39,4 +46,3 @@ def save_audio_from_user_detection(id: str):
 
     # Salve o arquivo como áudio WAV
     write("saida_audio.wav", taxa_amostragem, data)
-
