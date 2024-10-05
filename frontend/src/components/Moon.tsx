@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three"
 import MissionPoint from "@/components/MissionPoint"
 import { useTexture } from "@react-three/drei";
@@ -10,6 +10,7 @@ interface Props {
 
 export default function Moon({isPositionSphereCenter}: Props) {
 	const mesh = useRef<THREE.Mesh>(null!);
+	const {viewport} = useThree();
 	const [colorMap, bumpMap] = useTexture([
 		"/textures/moon/moonColorMap.jpg",
 		"/textures/moon/moonDisplacementMap.jpg",
@@ -26,10 +27,9 @@ export default function Moon({isPositionSphereCenter}: Props) {
 		{ lat: -8.9913, lon: 15.5144, identifier: "Apollo 16", id: 16}
 	]
 
-
   
 	return (
-		<>
+		<group scale={viewport.width / 8}>
 			<mesh ref={mesh} position={isPositionSphereCenter ? [0, 0, 0] : [1.9, 0, 0]}>
 				<sphereGeometry args={[1, 64, 64]} />
 				<meshPhongMaterial
@@ -47,6 +47,6 @@ export default function Moon({isPositionSphereCenter}: Props) {
 					<MissionPoint key={item.id} lat={item.lat} lon={item.lon} identifier={item.identifier}/>
 				)
 			}
-		</>
+		</group>
 	)
 }

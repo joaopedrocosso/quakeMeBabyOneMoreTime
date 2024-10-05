@@ -1,6 +1,6 @@
 'use client'
 import {  OrbitControls, useTexture, Sphere, useGLTF, SpotLight } from '@react-three/drei';
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from 'three';
 import { useRef, useState } from 'react';
 import MissionPoint from "@/components/MissionPoint"
@@ -11,6 +11,7 @@ interface Props {
 
 export default function Mars({isPositionSphereCenter}: Props) {
   const marsRef = useRef<THREE.Mesh>(null!);
+  const {viewport} = useThree();
   const colorMap = useTexture('/textures/mars/marsColorMap.jpg');
   const [isQuaking, setIsQuaking] = useState(false);
 
@@ -53,7 +54,7 @@ export default function Mars({isPositionSphereCenter}: Props) {
 	]
 
   return (
-    <>
+    <group scale={viewport.width / 8}>
       <Sphere ref={marsRef} args={[1, 64, 64]} castShadow receiveShadow position={isPositionSphereCenter ? [0, 0, 0] : [-1.9, 0, 0]}>
         <meshStandardMaterial
           map={colorMap}
@@ -75,6 +76,6 @@ export default function Mars({isPositionSphereCenter}: Props) {
         <boxGeometry args={[0.3, 0.1, 0.1]} />
         <meshStandardMaterial color={isQuaking ? 'red' : 'green'} />
       </mesh> */}
-    </>
+    </group>
   );
 }
