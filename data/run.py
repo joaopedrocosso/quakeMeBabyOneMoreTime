@@ -22,3 +22,40 @@ def connect_db():
         port=os.getenv('DB_PORT')
     )
     return conn
+
+# Create tables if they don't exist
+def create_tables(conn):
+    with conn.cursor() as cur:
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS data (
+            id BIGSERIAL PRIMARY KEY,
+            body TEXT,
+            filename TEXT,
+            time_abs TIMESTAMPTZ,
+            time_rel DOUBLE PRECISION,
+            velocity DOUBLE PRECISION,
+            event TEXT
+        );
+        CREATE TABLE IF NOT EXISTS catalog (
+            id BIGSERIAL PRIMARY KEY,
+            body TEXT,
+            filename TEXT,
+            arrival_time_abs TIMESTAMPTZ,
+            arrival_time_rel DOUBLE PRECISION,
+            evid TEXT,
+            mq_type TEXT,
+            network TEXT,
+            station TEXT,
+            location TEXT,
+            channel TEXT,
+            starttime TIMESTAMPTZ,
+            endtime TIMESTAMPTZ,
+            sampling_rate DOUBLE PRECISION,
+            delta DOUBLE PRECISION,
+            npts BIGINT,
+            calib DOUBLE PRECISION,
+            _format TEXT,
+            mseed JSONB
+        );
+        """)
+        conn.commit()
