@@ -1,5 +1,5 @@
 'use client'
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { useTexture, Sphere, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { useRef, useState, useEffect } from 'react';
@@ -58,10 +58,10 @@ const SceneWithCursor = ({children} : {children: React.ReactNode}) => {
         <ambientLight 
             intensity={3}
         />
-  
+
         {children}
   
-        <OrbitControls
+        {/* <OrbitControls
           enableZoom={true}
           enablePan={true}
           enableRotate={true}
@@ -73,7 +73,7 @@ const SceneWithCursor = ({children} : {children: React.ReactNode}) => {
           minDistance={2}
           enableDamping={true}
           dampingFactor={0.1}
-        />
+        /> */}
       </Canvas>
     );
 };
