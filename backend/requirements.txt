@@ -4,3 +4,5 @@ pydantic
 obspy
 scipy
 numpy
+psycopg2
+sqlalchemy

@@ -1,0 +1,8 @@
+## Check API is running
+GET http://localhost:8000/ping
+
+## Get detections
+GET http://localhost:8000/detections/
+
+## Get detection by timestamp
+GET http://localhost:8000/detections/1972-09-10T00:00:00Z
