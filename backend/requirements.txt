@@ -6,3 +6,4 @@ scipy
 numpy
 psycopg2
 sqlalchemy
+python-dotenv
