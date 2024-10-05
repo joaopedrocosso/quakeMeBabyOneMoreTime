@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -8,6 +9,17 @@ class Location(Enum):
     APOLLO_15 = "Apollo 15"
     APOLLO_16 = "Apollo 16"
     INSIGHT = "InSight"
+
+class EventFilter(BaseModel):
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    min_magnitude: Optional[float] = None
+    max_magnitude: Optional[float] = None
+
+
+class UploadEvent(BaseModel):
+    file: object
+    filename: str
 
 class SeismicEvent(BaseModel):
     id: int
