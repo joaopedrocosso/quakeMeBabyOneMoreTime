@@ -1,6 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.shadow-custom {
+  box-shadow: 4px 10px 16px rgba(41, 140, 234, 0.6), -4px 0 10px rgba(41, 140, 234, 0.6);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
