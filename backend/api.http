@@ -22,3 +22,19 @@ Content-Type: application/json
 {
     "station": "ELYSE"
 }
+
+
+###
+POST http://localhost:8000/upload_event
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; sampling_rate="1.0"; file="1.png"
+
+{
+    "file": "c:\\Users\\Usuario\\Documents\\GitHub\\nasa_space_apps_2024\\xa.s16.00.mhz.1972-09-10HR00_evid00075.csv",
+    "sampling_rate": 1.21
+}
+
+
+
+###
+GET http://localhost:8000/event/1/listen

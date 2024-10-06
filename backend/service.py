@@ -1,14 +1,17 @@
-import pickle
+import io
+import wave
 from fastapi.responses import FileResponse
 import numpy as np
 import pandas as pd
 from scipy.io.wavfile import write
+from tensorflow.keras.models import load_model
 
-from models import Data, UploadEvent, EventFilter, UserEventFilter
+
+from models import DataFilter, EventFilter, UserEventFilter
 import repository
 
 def list_data(filter: list):
-    event_filter = UserEventFilter(**dict(filter))
+    event_filter = DataFilter(**dict(filter))
     return repository.list_data(event_filter)
 
 def get_data(event_id: str):
@@ -28,14 +31,14 @@ def list_user_events(filter: list):
 def get_user_event(event_id: str):
     return repository.get_user_event_by_id(event_id)
 
-def save_event(upload_event: UploadEvent, content: bytes, result: str, audio: bytes):
+def save_event(upload_event: object, content: bytes, result: str, audio: bytes):
     repository.save_event(upload_event, content, result, audio)
 
-def process_event(upload_event: UploadEvent, content: bytes):
+def process_event(upload_event: object, content: bytes, sampling_rate: float):
     from io import BytesIO
 
     with open('file.pkl', 'rb') as arquivo_modelo:
-        modelo = pickle.load(arquivo_modelo)
+        modelo = load_model(arquivo_modelo)
     dados = pd.read_csv(BytesIO(content))
     # Faz previsões usando o modelo carregado
     previsoes = modelo.predict(dados)
@@ -49,9 +52,21 @@ def process_event(upload_event: UploadEvent, content: bytes):
 
 
 def listen_event(event_id: str):
-    event = get_data(event_id)
+    event = get_event(event_id)
+
+    if event.audio is None:
+
+        data_list = list_data([("evid", event.evid)])
     
-    convert_to_audio(event.filename, event.velocity.split())
+        convert_to_audio(event.filename, [float(d.velocity) for d in data_list])
+
+        with wave.open("seu_arquivo.wav", "rb") as wav_file:
+            frames = wav_file.readframes(wav_file.getnframes())
+            repository.update_event(event, frames)
+
+    else:
+         with open(event.filename +'.wav', mode='bx') as f:
+            f.write(event.audio)
     
     return FileResponse(path="./", media_type='audio/mpeg', filename=event.filename +'.wav')
 
