@@ -24,7 +24,6 @@ export default function RootLayout({
         className={`${poppins.className} antialiased`}
       >
         {children}
-        <BottomNavBar />
       </body>
     </html>
   );

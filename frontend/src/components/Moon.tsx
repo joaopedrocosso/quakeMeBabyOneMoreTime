@@ -34,7 +34,7 @@ export default function Moon({isPageHome}: Props) {
   
 	return (
 		<group scale={viewport.width / 8}>
-			<mesh ref={mesh} position={isPageHome ? [1.9, 0, 0] : [0, 0, 0]}>
+			<mesh ref={mesh} position={isPageHome ? [1.9, 0, 0] : [0, 0.2, 0]}>
 				<sphereGeometry args={[1, 64, 64]} />
 				<meshPhongMaterial
 					color="0xffffff"

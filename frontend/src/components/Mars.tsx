@@ -58,7 +58,7 @@ export default function Mars({isPageHome}: Props) {
 
   return (
     <group scale={viewport.width / 8}>
-      <Sphere ref={marsRef} args={[1, 64, 64]} castShadow receiveShadow position={isPageHome ? [-1.9, 0, 0] : [0, 0, 0]}>
+      <Sphere ref={marsRef} args={[1, 64, 64]} castShadow receiveShadow position={isPageHome ? [-1.9, 0, 0] : [0, 0.2, 0]}>
         <meshStandardMaterial
           map={colorMap}
           bumpScale={0.1}
