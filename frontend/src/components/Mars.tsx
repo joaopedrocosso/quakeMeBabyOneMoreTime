@@ -35,15 +35,13 @@ export default function Mars() {
         />
       </Sphere>
 
-      {/* Indicador de posição InSight */}
       <mesh position={[insightPosition.x, insightPosition.y, insightPosition.z]}>
         <sphereGeometry args={[0.01, 16, 16]} />
         <meshStandardMaterial color="#20252B" />
       </mesh>
 
-      {/* Adicionando a imagem PNG */}
       <Billboard
-        position={[insightPosition.x, insightPosition.y + 0.06, insightPosition.z]} // Ajuste a altura
+        position={[insightPosition.x, insightPosition.y + 0.06, insightPosition.z]}
         follow={true}
         lockX={false}
         lockY={false}
@@ -51,13 +49,12 @@ export default function Mars() {
 
       >
         <mesh>
-          {/* Ajuste o tamanho do plano conforme a proporção da sua imagem */}
-          <planeGeometry args={[0.340, 0.09649]} /> {/* Proporção de 148:42 */}
+          <planeGeometry args={[0.340, 0.09649]} />
           <meshStandardMaterial 
-            map={useTexture('/insight.png')} // Verifique a resolução da imagem
+            map={useTexture('/insight.png')}
             transparent 
             opacity={1}
-            side={THREE.DoubleSide} // Para melhorar a aparência
+            side={THREE.DoubleSide}
           />
         </mesh>
       </Billboard>
