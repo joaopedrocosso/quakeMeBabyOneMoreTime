@@ -1,8 +1,13 @@
 'use client'
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useTexture, Sphere, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { useRef, useState, useEffect } from 'react';
+
+interface Props {
+  children: React.ReactNode, 
+  enableControl: boolean
+};
 
 const StarryBackground = () => {
     const [scrollY, setScrollY] = useState(0);
@@ -30,7 +35,22 @@ const StarryBackground = () => {
     );
 };
 
-const SceneWithCursor = ({children} : {children: React.ReactNode}) => {
+function FollowCameraLight() {
+  const lightRef = useRef<THREE.DirectionalLight>(null!);
+  const { camera } = useThree();
+
+  useFrame(() => {
+    lightRef.current.position.x = camera.position.x - 1;
+    lightRef.current.position.y = camera.position.y + 2;
+    lightRef.current.position.z = camera.position.z + 2;
+  });
+
+  return (
+    <directionalLight ref={lightRef} intensity={3} />
+  );
+};
+
+const SceneWithCursor = ({children, enableControl} : Props) => {
     const [isDragging, setIsDragging] = useState(false);
   
     useEffect(() => {
@@ -49,39 +69,38 @@ const SceneWithCursor = ({children} : {children: React.ReactNode}) => {
       >
 
         <StarryBackground />
+        <FollowCameraLight />
   
         {/* <directionalLight
             position={[-10, 12, 18]}
             intensity={3}
         /> */}
 
-        <ambientLight 
-            intensity={3}
-        />
-
         {children}
   
-        {/* <OrbitControls
-          enableZoom={true}
-          enablePan={true}
-          enableRotate={true}
-          rotateSpeed={0.5}
-          zoomSpeed={0.6}
-          maxPolarAngle={Math.PI}
-          minPolarAngle={0}
-          maxDistance={5}
-          minDistance={2}
-          enableDamping={true}
-          dampingFactor={0.1}
-        /> */}
+        { enableControl && 
+          <OrbitControls
+            enableZoom={true}
+            enablePan={true}
+            enableRotate={true}
+            rotateSpeed={0.5}
+            zoomSpeed={0.6}
+            maxPolarAngle={Math.PI}
+            minPolarAngle={0}
+            maxDistance={5}
+            minDistance={2}
+            enableDamping={true}
+            dampingFactor={0.1} 
+        />
+        }
       </Canvas>
     );
 };
 
-export default function Scene({children} : {children: React.ReactNode}) {
+export default function Scene({children, enableControl} : Props) {
     return (
       <div style={{ width: '100vw', height: '100vh' }}>
-        <SceneWithCursor>{children}</SceneWithCursor>
+        <SceneWithCursor enableControl={enableControl}>{children}</SceneWithCursor>
       </div>
     );
   }

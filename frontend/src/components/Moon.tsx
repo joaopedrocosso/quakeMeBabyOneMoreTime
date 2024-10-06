@@ -1,14 +1,14 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three"
 import MissionPoint from "@/components/MissionPoint"
 import { useTexture } from "@react-three/drei";
 
 interface Props {
-  isPositionSphereCenter: boolean
+  isPageHome: boolean
 };
 
-export default function Moon({isPositionSphereCenter}: Props) {
+export default function Moon({isPageHome}: Props) {
 	const mesh = useRef<THREE.Mesh>(null!);
 	const {viewport} = useThree();
 	const [colorMap, bumpMap] = useTexture([
@@ -17,7 +17,10 @@ export default function Moon({isPositionSphereCenter}: Props) {
 	]);
 
 	useFrame(() => {
-		mesh.current.rotation.y += 0.002;
+		if(!isPageHome)
+      return
+
+		mesh.current.rotation.y += 0.004;
 		mesh.current.rotation.x += 0.0001;
 	});
 
@@ -30,7 +33,7 @@ export default function Moon({isPositionSphereCenter}: Props) {
   
 	return (
 		<group scale={viewport.width / 8}>
-			<mesh ref={mesh} position={isPositionSphereCenter ? [0, 0, 0] : [1.9, 0, 0]}>
+			<mesh ref={mesh} position={isPageHome ? [1.9, 0, 0] : [0, 0, 0]}>
 				<sphereGeometry args={[1, 64, 64]} />
 				<meshPhongMaterial
 					color="0xffffff"

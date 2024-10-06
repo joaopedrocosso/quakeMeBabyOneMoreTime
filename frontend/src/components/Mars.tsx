@@ -1,22 +1,25 @@
 'use client'
-import {  OrbitControls, useTexture, Sphere, useGLTF, SpotLight } from '@react-three/drei';
+import { useTexture, Sphere, useGLTF, SpotLight } from '@react-three/drei';
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from 'three';
 import { useRef, useState } from 'react';
 import MissionPoint from "@/components/MissionPoint"
 
 interface Props {
-  isPositionSphereCenter: boolean
+  isPageHome: boolean
 };
 
-export default function Mars({isPositionSphereCenter}: Props) {
+export default function Mars({isPageHome}: Props) {
   const marsRef = useRef<THREE.Mesh>(null!);
   const {viewport} = useThree();
   const colorMap = useTexture('/textures/mars/marsColorMap.jpg');
   const [isQuaking, setIsQuaking] = useState(false);
 
   useFrame(() => {
-		marsRef.current.rotation.y += 0.002;
+    if(!isPageHome)
+      return
+
+		marsRef.current.rotation.y += 0.004;
 		marsRef.current.rotation.x += 0.0001;
 	});
 
@@ -55,7 +58,7 @@ export default function Mars({isPositionSphereCenter}: Props) {
 
   return (
     <group scale={viewport.width / 8}>
-      <Sphere ref={marsRef} args={[1, 64, 64]} castShadow receiveShadow position={isPositionSphereCenter ? [0, 0, 0] : [-1.9, 0, 0]}>
+      <Sphere ref={marsRef} args={[1, 64, 64]} castShadow receiveShadow position={isPageHome ? [-1.9, 0, 0] : [0, 0, 0]}>
         <meshStandardMaterial
           map={colorMap}
           bumpScale={0.1}
