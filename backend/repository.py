@@ -20,8 +20,11 @@ def get_db():
 def list_data(filter: models.DataFilter):
     filters = []
 
-    if filter.start_date:
+    if filter.evid:
         filters.append(dbmodels.Data.evid >= filter.evid)
+
+    # if filter.catalog_id:
+    #     filters.append(dbmodels.Data.catalog_id >= filter.catalog_id)
 
     return get_db().query(dbmodels.Data).all()
 
@@ -34,15 +37,16 @@ def list_events(filter: models.EventFilter):
     if filter.station:
         filters.append(dbmodels.Catalog.station == filter.station)
 
-    if filter.start_date:
-        filters.append(dbmodels.Catalog.starttime >= filter.start_date)
+    if filter.starttime:
+        filters.append(dbmodels.Catalog.starttime >= filter.starttime)
 
-    if filter.end_date:
-        filters.append(dbmodels.Catalog.starttime <= filter.end_date)
+    if filter.endtime:
+        filters.append(dbmodels.Catalog.starttime <= filter.endtime)
 
     if filter.body:
         filters.append(dbmodels.Catalog.body <= filter.body)
-
+    print(filter)
+    print(filters)
     query = get_db().query(dbmodels.Catalog)
 
     if filters:

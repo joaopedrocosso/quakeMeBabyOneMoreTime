@@ -35,6 +35,7 @@ class Data(Base):
     time_rel = Column(String)
     velocity = Column(String)
     event = Column(Boolean)
+    # catalog_id = Column(Integer)
 
 class UserEvent(Base):
     __tablename__ = 'user_event'

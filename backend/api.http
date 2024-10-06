@@ -8,8 +8,9 @@ POST http://localhost:8000/list_events
 Content-Type: application/json
 
 {
-    "station": "ELYSE"
-}
+    "body": "lunar",
+    "starttime": "1974-08-10T00:00:00.506000Z"
+} 
 
 ###
 GET http://localhost:8000/user_event/1
