@@ -1,12 +1,18 @@
-from typing import List
-from fastapi import UploadFile
+import pickle
+from fastapi.responses import FileResponse
 import numpy as np
-from obspy import read
+import pandas as pd
 from scipy.io.wavfile import write
 
-from models import UploadEvent, EventFilter
+from models import Data, UploadEvent, EventFilter, UserEventFilter
 import repository
 
+def list_data(filter: list):
+    event_filter = UserEventFilter(**dict(filter))
+    return repository.list_data(event_filter)
+
+def get_data(event_id: str):
+    return repository.get_data_by_id(event_id)
 
 def list_events(filter: list):
     event_filter = EventFilter(**dict(filter))
@@ -15,34 +21,47 @@ def list_events(filter: list):
 def get_event(event_id: str):
     return repository.get_event_by_id(event_id)
 
-def save_event(event: UploadEvent):
-    repository.save_event(event)
+def list_user_events(filter: list):
+    event_filter = EventFilter(**dict(filter))
+    return repository.list_user_events(event_filter)
 
-def process_event(file: UploadFile):
-    return ''
+def get_user_event(event_id: str):
+    return repository.get_user_event_by_id(event_id)
+
+def save_event(upload_event: UploadEvent, content: bytes, result: str, audio: bytes):
+    repository.save_event(upload_event, content, result, audio)
+
+def process_event(upload_event: UploadEvent, content: bytes):
+    from io import BytesIO
+
+    with open('file.pkl', 'rb') as arquivo_modelo:
+        modelo = pickle.load(arquivo_modelo)
+    dados = pd.read_csv(BytesIO(content))
+    # Faz previsões usando o modelo carregado
+    previsoes = modelo.predict(dados)
+
+    convert_to_audio(upload_event.filename, dados['velocity'])
+
+    with open(upload_event.filename, 'rb') as file:
+                wav_bytes = file.read()
+
+    return save_event(upload_event, BytesIO(content), previsoes, wav_bytes), FileResponse(path="./", media_type='audio/mpeg', filename=upload_event.filename +'.wav')
+
 
 def listen_event(event_id: str):
-    return ''
+    event = get_data(event_id)
+    
+    convert_to_audio(event.filename, event.velocity.split())
+    
+    return FileResponse(path="./", media_type='audio/mpeg', filename=event.filename +'.wav')
 
-def save_audio_from_user_detection(id: str):
-    # Leia o arquivo MiniSEED
-    st = read("xa.s16.00.mhz.1972-09-10HR00_evid00075.mseed")
 
-    # Combine todos os traços (se houver mais de um canal de dados)
-    tr = st[0]  # Pegue o primeiro traço (ou combine vários se necessário)
+def convert_to_audio(filename: str, velocity: list[float]):
+    normalized_amplitude = velocity / np.max(np.abs(velocity))
 
-    # Acelere o sinal (normalmente você precisa acelerar para torná-lo audível)
-    # fator_aceleracao = 10  # Defina a taxa de aceleração
-    # tr.decimate(factor=fator_aceleracao)  # Diminui a resolução temporal
+    # Convert to appropriate audio format (int16)
+    audio_data = np.int16(normalized_amplitude * 32767)
 
-    # Normalize os dados entre -1 e 1 para garantir que eles possam ser convertidos em som
-    data = tr.data / max(np.abs(tr.data))
-
-    # Multiplicar pelos níveis de amplitude para conversão para 16-bit PCM
-    data = np.int16(data * 32767)
-
-    # Defina uma taxa de amostragem adequada (e.g. 44100 Hz)
     taxa_amostragem = 44100
 
-    # Salve o arquivo como áudio WAV
-    write("saida_audio.wav", taxa_amostragem, data)
+    write(filename + ".wav", taxa_amostragem, audio_data)

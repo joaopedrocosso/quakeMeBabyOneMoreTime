@@ -65,7 +65,7 @@ const SceneWithCursor = ({children, enableControl} : Props) => {
         onPointerDown={() => setIsDragging(true)}
         onPointerUp={() => setIsDragging(false)}
         shadows
-        camera={{ position: [0, 0, 5], fov: 45 }}
+        camera={{ position: [0, 0, 5], fov: 40 }}
       >
 
         <StarryBackground />
@@ -73,7 +73,7 @@ const SceneWithCursor = ({children, enableControl} : Props) => {
   
         {/* <directionalLight
             position={[-10, 12, 18]}
-            intensity={3}
+            intensity={4}
         /> */}
 
         {children}
