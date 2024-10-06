@@ -30,15 +30,19 @@ interface EventsItem {
     station: string;
     starttime: string;
 }
-import { Badge } from "@/components/ui/badge"
 import { PlanetTravelCard } from "./PlanetTravelCard";
-import { DatePicker } from "./DatePicker";
+import { Checkbox } from "@/components/ui/checkbox"
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export const BottomNavBar = () => {
 
     const [activeButton, setActiveButton] = useState<string | null>(null);
     const [data, setData] = useState([]);
+
+
+    const pathname = usePathname();
+    console.log(pathname)
 
     const fetchAllData = async() => {
         try{
@@ -129,25 +133,33 @@ export const BottomNavBar = () => {
                                         Filters
                                     </h1>
                                     <div className="flex flex-row gap-2 w-full">
-                                        <Select>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue className="" placeholder="Select a date" />
-                                            </SelectTrigger>
-                                            <SelectContent className="bg-black">
-                                                <SelectItem value="light">Light</SelectItem>
-                                                <SelectItem value="dark">Dark</SelectItem>
-                                                <SelectItem value="system">System</SelectItem>
-                                            </SelectContent>
-                                        </Select>
+
+                                        {pathname.includes("/moon") ? (
+                                            <Select>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select the probe" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="s12">s12</SelectItem>
+                                                    <SelectItem value="s15">s15</SelectItem>
+                                                    <SelectItem value="s16">s16</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        ) : (
+                                            <div className="flex flex-row w-full items-center gap-4">
+                                                <Checkbox id="insightLander" />
+                                                <label htmlFor="insightLander" className="text-white text-[16px]">
+                                                    InSight Lander
+                                                </label>
+                                            </div>
+                                        )}
 
                                         <Select>
                                             <SelectTrigger className="w-full">
-                                                <SelectValue className="" placeholder="Select a date" />
+                                                <SelectValue placeholder="Choose the date" />
                                             </SelectTrigger>
-                                            <SelectContent className="bg-black">
-                                                <SelectItem value="light">Light</SelectItem>
-                                                <SelectItem value="dark">Dark</SelectItem>
-                                                <SelectItem value="system">System</SelectItem>
+                                            <SelectContent>
+                                                <SelectItem value="light">01/10/1976</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
