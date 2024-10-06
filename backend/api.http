@@ -36,6 +36,8 @@ Content-Disposition: form-data; sampling_rate="1.0"; file="1.png"
 }
 
 
-
 ###
 GET http://localhost:8000/event/1/listen
+
+
+###
