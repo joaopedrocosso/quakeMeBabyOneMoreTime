@@ -118,16 +118,16 @@ export const BottomNavBar = () => {
                     </DialogTrigger>
                     <DialogContent className="overflow-auto">
                         <DialogHeader>
-                            <DialogTitle>Visualize an Event</DialogTitle>
-                            <DialogDescription>
-                                <span>
+                            <DialogTitle className="md:text-center">Visualize an Event</DialogTitle>
+                            <DialogDescription className="max-w-2xl m-auto">
+                                <span className="md:text-center">
                                     Select an event, watch it shaking the ground, being detected and analysed by our model, listen to how it would sound and view how the S.O.D.I.M. can help identifying and broadcasting the data back to Earth. 
                                 </span>
-                                <ul className="mt-8">
+                                <div className="mt-8">
                                     {data?.map((item: EventsItem) => (
                                         <ListItems key={item.id} event={item}/>
                                     ))}
-                                </ul>
+                                </div>
                             </DialogDescription>
                         </DialogHeader>
                     </DialogContent>

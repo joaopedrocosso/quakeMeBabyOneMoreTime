@@ -22,7 +22,7 @@ const ListItems = ( {event} : EventsProp) => {
   const dateTime = getTimestamp();
 
   window.matchMedia("(max-width: 768px)").addEventListener('change', e => {
-    setFilename(displayFilename(event.filename, 25))
+    setFilename(displayFilename(event.filename, 20))
   });
 
   function getTimestamp() {
@@ -45,13 +45,13 @@ const ListItems = ( {event} : EventsProp) => {
   };
 
   return (
-    <Card key={event.id} className="bg-[#011221] border-none">
-      <CardHeader className="flex text-start pr-2 pb-2 pt-2 pb-2 justify-between">
-          <div className="items-center pl-4 pb-2">
-              <CardTitle className="text-white text-lg">{dateTime} - {event.station}</CardTitle>
-              <CardDescription className="px-4"><p>{filename}</p></CardDescription>
+    <Card key={event.id} className="px-2 mt-2 bg-[#011221] border-none">
+      <CardHeader className="flex flex-row text-start pr-2 pb-2 pt-2 pb-2 justify-between">
+          <div className="items-center pl-4 pr-1">
+              <CardTitle className="text-white text-md md:text-lg">{dateTime} - {event.station}</CardTitle>
+              <CardDescription><p>{filename}</p></CardDescription>
           </div>
-          <div>
+          <div className="flex items-center">
             <Button 
                 className="px-4 py-4 bg-gradient-to-t from-[#4670DA] via-[#0AA9FA] to-[#00B2FF] hover:shadow-[0_14px_20px_rgba(41,140,234,0.5)] transition-all tracking-wide text-md"
               >
