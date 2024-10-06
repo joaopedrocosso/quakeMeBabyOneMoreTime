@@ -13,6 +13,15 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import { Button } from "./ui/button";
 import NavBarItem from "./NavBarItem";
 import ListItems from "./ListItems";
@@ -23,6 +32,8 @@ interface EventsItem {
     station: string;
     starttime: string;
 }
+import { Badge } from "@/components/ui/badge"
+import { PlanetTravelCard } from "./PlanetTravelCard";
 
 export const BottomNavBar = () => {
 
@@ -49,11 +60,14 @@ export const BottomNavBar = () => {
             return
         }
     }
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const closeDialog = () => setIsDialogOpen(false);
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#011221] shadow-md md:hidden">
             <div className="flex justify-between items-center">
-                <Dialog>
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                         <div className="w-full">
                             <NavBarItem 
@@ -67,15 +81,30 @@ export const BottomNavBar = () => {
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Where do you want to go?</DialogTitle>
-                            <DialogDescription>
+                            <DialogDescription className="pb-4">
                                 <span>
-                                    Select an event, watch it shaking the ground, being detected and analysed by our model, listen to how it would sound and view how the S.O.D.I.M. can help identifying and broadcasting the data back to Earth. 
+                                    Wouldn't it be cool to visualize and listen to seismic events that took place on the Moon or Mars? Choose your destination and we'll give you this experience!
                                 </span>
                             </DialogDescription>
+
+                            <PlanetTravelCard 
+                                celestial="Mars" 
+                                description="Watch the InSight mission's findings on the surface of the Red Planet and see how tectonically active it may be." 
+                                icon="/icons/Mars.png" 
+                                onClick={closeDialog}
+                            />
+
+                            <PlanetTravelCard 
+                                celestial="Moon" 
+                                description="Uncover the secrets of the lunar quakes observed through the Apollo 12, Apollo 15 and Apollo 16 missions." 
+                                icon="/icons/Moon.png" 
+                                onClick={closeDialog}
+                            />
                         </DialogHeader>
                     </DialogContent>
                 </Dialog>
 
+                {/* Outros Dialogs */}
                 <Dialog>
                     <DialogTrigger asChild onPointerDown={() => fetchAllData()}>
                         <div className="w-full">
@@ -194,7 +223,6 @@ export const BottomNavBar = () => {
                 </Dialog>
 
                 {/* Analysis */}
-                {/* Todo: Organize elements in the sampling rate entry on the desktop */}
                 <Dialog>
                     <DialogTrigger asChild>
                         <div className="w-full">
@@ -210,64 +238,60 @@ export const BottomNavBar = () => {
                         <DialogHeader>
                             <DialogTitle>Make your analysis</DialogTitle>
                             <DialogDescription>
-                                <span>
-                                    Upload any detection file in CSV format and provide the sampling rate of the data, and our app will take care of the rest.
-                                </span>
+                                <div className="w-full m-auto px-12 sm:px-8 sm:w-8/12 md:w-7/12 lg:w-6/12 xl:m-4/12 flex flex-col gap-2">
+                                    <div className="relative group w-full h-12 flex flex-row items-center justify-center">
+                                        <div aria-hidden='true' className="absolute inset-0 w-full h-full rounded-xl bg-[#011221] bg-opacity-80 backdrop-blur-xl group-hover:bg-opacity-60 transition duration-300 shadow-3xl border border-[#000]"></div>
+
+                                        <input 
+                                            type="number" 
+                                            name="spRate"
+                                            id="spRate"
+                                            placeholder="6.625"
+                                            className="text-white bg-[#00050C] rounded-md pl-2 border border-[#788CA0] relative z-10 w-20 h-8 ml-auto mr-4"
+                                        />
+
+                                        <div className=" items-center absolute inset-0 w-full h-full flex cursor-pointer">
+                                            <div className="flex flex-row ml-4 gap-3">
+                                                <img 
+                                                    src="/docUpload.jpg" 
+                                                    alt="Upload Illustration" 
+                                                    className="w-5 m-auto sm:w-40"
+                                                />
+                                                <p className="space-x-2 block text-[#788CA0] text-md text-center">
+                                                    <span>Sampling rate</span>
+                                                    <strong>[Float]</strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="relative group w-full h-64 flex items-center justify-center">
+                                        <div aria-hidden='true' className="absolute inset-0 w-full h-full rounded-xl bg-[#011221] bg-opacity-80 backdrop-blur-xl group-hover:bg-opacity-60 group-hover:scale-90 transition duration-300 shadow-3xl border border-[#000]"></div>
+                                        <input 
+                                            type="file" 
+                                            name="csvFile"
+                                            id="csvFile"
+                                            accept=".csv"
+                                            className="relative z-10 opacity-0 w-full h-full"
+                                        />
+
+                                        <div className="flex justify-center items-center absolute inset-0 w-full h-full flex cursor-pointer">
+                                            <div className="space-y-6">
+                                                <img 
+                                                    src="/docUpload.jpg" 
+                                                    alt="Upload Illustration" 
+                                                    className="w-32 m-auto sm:w-40"
+                                                />
+                                                <p className="text-[#788CA0] text-md text-center">
+                                                    <span className="block">Drag and drop a background or</span>
+                                                    <label htmlFor="csvFile" className="text-blue-600">click to upload</label>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </DialogDescription>
                         </DialogHeader>
-
-                        <div className="w-full m-auto px-12 sm:px-8 sm:w-8/12 md:w-7/12 lg:w-6/12 xl:m-4/12 flex flex-col gap-2">
-                            <div className="relative group w-full h-12 flex flex-row items-center justify-center">
-                                <div aria-hidden='true' className="absolute inset-0 w-full h-full rounded-xl bg-[#011221] bg-opacity-80 backdrop-blur-xl group-hover:bg-opacity-60 transition duration-300 shadow-3xl border border-[#000]"></div>
-
-                                <input 
-                                    type="number" 
-                                    name="spRate"
-                                    id="spRate"
-                                    placeholder="6.625"
-                                    className="text-white bg-[#00050C] rounded-md pl-2 border border-[#788CA0] relative z-10 w-20 h-8 ml-auto mr-4"
-                                />
-
-                                <div className=" items-center absolute inset-0 w-full h-full flex cursor-pointer">
-                                    <div className="flex flex-row ml-4 gap-3">
-                                        <img 
-                                            src="/docUpload.jpg" 
-                                            alt="Upload Illustration" 
-                                            className="w-5 m-auto sm:w-40"
-                                        />
-                                        <p className="space-x-2 block text-[#788CA0] text-md text-center">
-                                            <span>Sampling rate</span>
-                                            <strong>[Float]</strong>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="relative group w-full h-64 flex items-center justify-center">
-                                <div aria-hidden='true' className="absolute inset-0 w-full h-full rounded-xl bg-[#011221] bg-opacity-80 backdrop-blur-xl group-hover:bg-opacity-60 group-hover:scale-90 transition duration-300 shadow-3xl border border-[#000]"></div>
-                                <input 
-                                    type="file" 
-                                    name="csvFile"
-                                    id="csvFile"
-                                    accept=".csv"
-                                    className="relative z-10 opacity-0 w-full h-full"
-                                />
-
-                                <div className="flex justify-center items-center absolute inset-0 w-full h-full flex cursor-pointer">
-                                    <div className="space-y-6">
-                                        <img 
-                                            src="/docUpload.jpg" 
-                                            alt="Upload Illustration" 
-                                            className="w-32 m-auto sm:w-40"
-                                        />
-                                        <p className="text-[#788CA0] text-md text-center">
-                                            <span className="block">Drag and drop a background or</span>
-                                            <label htmlFor="csvFile" className="text-blue-600">click to upload</label>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <DialogFooter className="mx-auto my-12">
                             <Button className="px-12 py-4 bg-gradient-to-t from-[#4670DA] via-[#0AA9FA] to-[#00B2FF] hover:shadow-[0_14px_20px_rgba(41,140,234,0.5)] transition-all tracking-wide text-md">
