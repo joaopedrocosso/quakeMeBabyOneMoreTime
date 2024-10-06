@@ -52,11 +52,10 @@ class Data(BaseModel):
     velocity: float
     event: str
 
-class EventAudio(BaseModel):
+class UserEvent(BaseModel):
     id: int
-    event_id: int
-    user_event_id: int
+    filename: str
+    sampling_rate: float
+    content: bytes
+    event: str
     audio: bytes
-
-    class Config:
-        orm_mode = True
