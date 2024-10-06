@@ -1,3 +1,6 @@
+### Prepare enviment
+Make sure you have installed Python12
+
 ### Install dependencies:
 ```bash
 pip install -r requirements.txt
