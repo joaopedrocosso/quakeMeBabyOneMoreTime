@@ -10,9 +10,13 @@ class EventFilter(BaseModel):
     end_date: Optional[datetime] = None
     station: Optional[str] = None
 
+class UserEventFilter(BaseModel):
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+
 class UploadEvent(BaseModel):
     file: UploadFile = File(...)
-    filename: str
+    sampling_rate: float
 
 class UserSeismicDetectionCreate(BaseModel):
     filename: str
@@ -38,9 +42,6 @@ class Catalog(BaseModel):
     _format: Optional[str] = None
     mseed: Optional[object] = None
 
-    class Config:
-        orm_mode = True
-
 
 class Data(BaseModel):
     id: int
@@ -50,17 +51,6 @@ class Data(BaseModel):
     time_rel: float
     velocity: float
     event: str
-
-    class Config:
-        orm_mode = True
-
-class UserEvent(BaseModel):
-    id: int
-    filename: str
-    event: str
-
-    class Config:
-        orm_mode = True
 
 class EventAudio(BaseModel):
     id: int

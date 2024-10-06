@@ -35,12 +35,16 @@ class Data(Base):
     time_rel = Column(Float)
     velocity = Column(Float)
     event = Column(String)
+    audio = Column(LargeBinary)
 
 class UserEvent(Base):
     __tablename__ = 'user_event'
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     filename = Column(String)
+    sampling_rate = Column(Float)
+    content = Column(LargeBinary)
     event = Column(String)
+    audio = Column(LargeBinary)
 
 
 class event_audio(Base):
