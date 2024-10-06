@@ -1,13 +1,16 @@
 import * as THREE from 'three'
-import { Billboard, Text } from "@react-three/drei";
+import { Billboard, Text, useTexture } from "@react-three/drei";
 
 interface Props {
   lat: number;
   lon: number;
   identifier: string;
+  image: string;
+  imgWidth: number;
+  imgHeight: number
 };
 
-export default function MissionPoint({lat, lon, identifier}: Props) {
+export default function MissionPoint({lat, lon, image, imgWidth, imgHeight}: Props) {
   const latLongToVector3 = (lat: number, lon: number, radius: number) => {
     const phi = (90 - lat) * (Math.PI / 180);
     const theta = (lon + 180) * (Math.PI / 180); 
@@ -39,14 +42,15 @@ export default function MissionPoint({lat, lon, identifier}: Props) {
         lockY={false}
         lockZ={false}
       >
-        <Text
-          fontSize={0.04}
-          color="#011221"
-          anchorX="center"
-          anchorY="middle"
-        >
-          {identifier}
-        </Text>
+        <mesh>
+          <planeGeometry args={[imgWidth, imgHeight]} />
+          <meshStandardMaterial 
+            map={useTexture(image)}
+            transparent 
+            opacity={1}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
       </Billboard>
 		</>
   )

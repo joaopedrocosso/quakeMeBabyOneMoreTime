@@ -26,9 +26,9 @@ export default function Moon({isPageHome}: Props) {
 	});
 
 	const apolloCoordinates = [
-		{ lat: -3.1975, lon: -23.3856, identifier: "Apollo 12", id: 12},
-		{ lat: 26.1008, lon: 3.6527, identifier: "Apollo 15", id: 15},
-		{ lat: -8.9913, lon: 15.5144, identifier: "Apollo 16", id: 16}
+		{ lat: -3.1975, lon: -23.3856, identifier: "Apollo 12", image: "/missions/apollo12.png", id: 12},
+		{ lat: 26.1008, lon: 3.6527, identifier: "Apollo 15", image: "/missions/apollo15.png", id: 15},
+		{ lat: -8.9913, lon: 15.5144, identifier: "Apollo 16", image: "/missions/apollo16.png", id: 16}
 	]
 
   
@@ -48,7 +48,7 @@ export default function Moon({isPageHome}: Props) {
 			</mesh>
 			{
 				apolloCoordinates.map((item) =>
-					<MissionPoint key={item.id} lat={item.lat} lon={item.lon} identifier={item.identifier}/>
+					<MissionPoint key={item.id} lat={item.lat} lon={item.lon} identifier={item.identifier} image={item.image} imgWidth={0.258} imgHeight={0.09649}/>
 				)
 			}
 		</group>
