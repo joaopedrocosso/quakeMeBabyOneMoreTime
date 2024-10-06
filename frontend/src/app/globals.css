@@ -6,6 +6,27 @@
   box-shadow: 4px 10px 16px rgba(41, 140, 234, 0.6), -4px 0 10px rgba(41, 140, 234, 0.6);
 }
 
+
+@layer components {
+  ::-webkit-scrollbar {
+      width: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+      background: #011221; 
+  }
+
+  ::-webkit-scrollbar-thumb {
+      background-color: #00B2FF;
+      border-radius: 10px; 
+      border: 3px solid #011221;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+      background-color: #4670DA; 
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
