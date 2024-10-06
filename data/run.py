@@ -6,6 +6,8 @@ from obspy import read
 from dotenv import load_dotenv
 from tqdm import tqdm
 from obspy.core.utcdatetime import UTCDateTime
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import gc  # Garbage collector to release memory
 
 # Load environment variables
 load_dotenv()
@@ -64,69 +66,57 @@ def batch_insert(cur, table_name, columns, data):
     cur.execute('SELECT LASTVAL();')  # Retrieve the last inserted id
     return cur.fetchone()[0]
 
-# Process CSV file and return the generated id and evid
-def process_csv(file_path, table_name, conn, body, evid, batch_size=10000):
-    print(f"Processing CSV: {file_path}")
-    if os.path.getsize(file_path) == 0:
-        print(f"Empty CSV file: {file_path}. Skipping.")
-        return None, None
-
+# Process CSV file in chunks and return the generated id and evid
+def process_csv_in_chunks(file_path, table_name, conn, body, evid, batch_size=100000):
+    print(f"Processing CSV in chunks: {file_path}")
+    
     try:
-        # Ensure the CSV is read correctly
-        df = pd.read_csv(file_path)
-        if df.empty:
-            print(f"CSV file with no data: {file_path}. Skipping.")
-            return None, None
+        # Read CSV in chunks to avoid memory overload
+        chunk_iter = pd.read_csv(file_path, chunksize=batch_size)
+        
+        for chunk in chunk_iter:
+            # Renaming columns to remove special characters like parentheses
+            chunk.columns = chunk.columns.str.replace(r'\(.*\)', '', regex=True)
 
-        # Handle possible variations in headers and ensure they are captured
-        if 'time_abs' in df.columns:
-            df['time_abs'] = df['time_abs'].astype(str)  # Ensure TEXT format
-        elif 'time' in df.columns:
-            df['time_abs'] = df['time'].astype(str)  # Use 'time' if 'time_abs' is missing
-        else:
-            df['time_abs'] = None  # If neither exists, set as None
+            # Handle possible variations in headers and ensure they are captured
+            if 'time_abs' in chunk.columns:
+                chunk['time_abs'] = chunk['time_abs'].astype(str)  # Ensure TEXT format
+            elif 'time' in chunk.columns:
+                chunk['time_abs'] = chunk['time'].astype(str)  # Use 'time' if 'time_abs' is missing
+            else:
+                chunk['time_abs'] = None  # If neither exists, set as None
 
-        if 'time_rel' in df.columns:
-            df['time_rel'] = df['time_rel'].astype(str)  # Ensure TEXT format
-        elif 'rel_time' in df.columns:
-            df['time_rel'] = df['rel_time'].astype(str)  # Use 'rel_time' if 'time_rel' is missing
-        else:
-            df['time_rel'] = None  # If neither exists, set as None
+            if 'time_rel' in chunk.columns:
+                chunk['time_rel'] = chunk['time_rel'].astype(str)  # Ensure TEXT format
+            elif 'rel_time' in chunk.columns:
+                chunk['time_rel'] = chunk['rel_time'].astype(str)  # Use 'rel_time' if 'time_rel' is missing
+            else:
+                chunk['time_rel'] = None  # If neither exists, set as None
 
-        if 'velocity' not in df.columns:
-            df['velocity'] = df.get('velocity(c/s)', '').astype(str)  # Handling possible different header for velocity
-        else:
-            df['velocity'] = df['velocity'].astype(str)
+            if 'velocity' not in chunk.columns:
+                chunk['velocity'] = chunk.get('velocity', '').astype(str)  # Handling possible different header for velocity
+            else:
+                chunk['velocity'] = chunk['velocity'].astype(str)
 
-        # Verify the values being captured for debugging
-        print("Sample values captured:")
-        print(df[['time_abs', 'time_rel', 'velocity']].head())
+            data_to_insert = []
+            with conn.cursor() as cur:
+                for _, row in tqdm(chunk.iterrows(), total=len(chunk), desc=f"Processing {file_path}"):
+                    time_abs_value = row['time_abs'] if pd.notna(row['time_abs']) else None
+                    time_rel_value = row['time_rel'] if pd.notna(row['time_rel']) else None
+                    velocity_value = row['velocity'] if pd.notna(row['velocity']) else None
 
-        data_to_insert = []
-        with conn.cursor() as cur:
-            for _, row in tqdm(df.iterrows(), total=len(df), desc=f"Processing {file_path}"):
-                # Add row data with proper checks
-                time_abs_value = row['time_abs'] if pd.notna(row['time_abs']) else None
-                time_rel_value = row['time_rel'] if pd.notna(row['time_rel']) else None
-                velocity_value = row['velocity'] if pd.notna(row['velocity']) else None
+                    data_to_insert.append((
+                        evid, time_abs_value, time_rel_value, velocity_value, None
+                    ))
 
-                # Print the values to ensure correct capture
-                print(f"Inserting: time_abs={time_abs_value}, time_rel={time_rel_value}, velocity={velocity_value}")
-
-                data_to_insert.append((
-                    evid, time_abs_value, time_rel_value, velocity_value, None
-                ))
-
-                # Insert batch of data once batch size is reached
-                if len(data_to_insert) >= batch_size:
+                if data_to_insert:
                     batch_insert(cur, table_name, ['evid', 'time_abs', 'time_rel', 'velocity', 'event'], data_to_insert)
                     conn.commit()
-                    data_to_insert.clear()  # Clear batch after insert
 
-            # Insert remaining data if any
-            if data_to_insert:
-                batch_insert(cur, table_name, ['evid', 'time_abs', 'time_rel', 'velocity', 'event'], data_to_insert)
-                conn.commit()
+                # Clear memory for the current chunk
+                del chunk
+                del data_to_insert
+                gc.collect()  # Trigger garbage collection to free memory
 
     except pd.errors.EmptyDataError:
         print(f"Error: The CSV file {file_path} is empty or corrupted. Skipping.")
@@ -172,16 +162,28 @@ def process_mseed(file_path, conn, body, evid, csv_id, batch_size=100):
                                           'selection_broadcast', 'features_at_detection', 'audio'], data_to_insert)
             conn.commit()
 
-# Traverse directories and process files in pairs (CSV + MSEED)
-def process_directory(directory, conn, body, batch_size=10000):
-    # Dictionary to store file pairs (key: base filename, value: dict of csv and mseed)
+# Function to handle parallel processing for CSV and MSEED files
+def process_file_pair(file_pair, body, batch_size):
+    csv_file = file_pair['csv']
+    mseed_file = file_pair['mseed']
+    evid = csv_file.split('_evid')[-1].replace('.csv', '')
+
+    conn = connect_db()
+    try:
+        process_csv_in_chunks(csv_file, 'data', conn, body, evid, batch_size)
+        process_mseed(mseed_file, conn, body, evid, None, batch_size)
+    finally:
+        conn.close()
+
+# Traverse directories and process files in parallel with 4 connections
+def process_directory_parallel(directory, body, batch_size=100000):
     file_pairs = {}
 
     # Recursively find all .csv and .mseed files in the directory
     for root, _, filenames in os.walk(directory):
         for file in filenames:
             file_path = os.path.join(root, file)
-            base_filename = file.split('_evid')[0]  # Extract base filename before the evid part
+            base_filename = file.split('_evid')[0]
 
             if file.endswith('.csv'):
                 if base_filename not in file_pairs:
@@ -192,24 +194,20 @@ def process_directory(directory, conn, body, batch_size=10000):
                     file_pairs[base_filename] = {}
                 file_pairs[base_filename]['mseed'] = file_path
 
-    # Process each pair of CSV and MSEED files
-    for base_filename, files in tqdm(file_pairs.items(), desc=f"Processing directory {directory}"):
-        csv_file = files.get('csv')
-        mseed_file = files.get('mseed')
-
-        if csv_file and mseed_file:
-            evid = csv_file.split('_evid')[-1].replace('.csv', '')
-            csv_id, evid = process_csv(csv_file, 'data', conn, body, evid, batch_size)
-
-            if csv_id:
-                process_mseed(mseed_file, conn, body, evid, csv_id, batch_size)
-        else:
-            print(f"Skipping incomplete pair: {base_filename}")
+    # Parallel processing of file pairs using ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        futures = [executor.submit(process_file_pair, files, body, batch_size) for files in file_pairs.values()]
+        for future in as_completed(futures):
+            try:
+                future.result()  # This will raise an exception if the thread encountered an error
+            except Exception as exc:
+                print(f"An error occurred: {exc}")
 
 # Main function
 def main():
     conn = connect_db()
     create_tables(conn)
+    conn.close()
 
     directories = {
         'mars': './space_apps_2024_seismic_detection/data/mars/test/data',
@@ -220,9 +218,7 @@ def main():
 
     for body, directory in directories.items():
         print(f"Processing body: {body}")
-        process_directory(directory, conn, body, batch_size)
-
-    conn.close()
+        process_directory_parallel(directory, body, batch_size)
 
 if __name__ == '__main__':
     main()
