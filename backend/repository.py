@@ -23,12 +23,17 @@ def list_data(filter: models.DataFilter):
     filters = []
 
     if filter.evid:
-        filters.append(dbmodels.Data.evid >= filter.evid)
+        filters.append(dbmodels.Data.evid == filter.evid)
 
-    # if filter.catalog_id:
-    #     filters.append(dbmodels.Data.catalog_id >= filter.catalog_id)
+    if filter.catalog_id:
+        filters.append(dbmodels.Data.catalog_id == filter.catalog_id)
 
-    return get_db().query(dbmodels.Data).all()
+    query = get_db().query(dbmodels.Data)
+
+    if filters:
+        query = query.filter(and_(*filters))
+
+    return query.all()
 
 def get_data_by_id(event_id: int):
     return get_db().query(dbmodels.Data).filter(dbmodels.Data.id == event_id).first()
@@ -48,8 +53,6 @@ def list_events(filter: models.EventFilter):
     if filter.body:
         filters.append(dbmodels.Catalog.body == filter.body)
 
-    print(filter)
-    print(filters)
     query = get_db().query(dbmodels.Catalog)
 
     if filters:
@@ -98,10 +101,13 @@ def save_event(event: object, content: bytes, result: bool, audio: bytes, sampli
     return new_event
 
 def update_event(event: dbmodels.Catalog, audio: bytes):
-    event.audio = audio
 
-    get_db().query(dbmodels.Catalog)
-    get_db().commit()
-    get_db().refresh(event)
+    with get_db() as db:
+        if not db.is_modified(event):
+            event = db.merge(event)
+
+        event.audio = audio
+        db.commit()
+        db.refresh(event)
 
     return event
