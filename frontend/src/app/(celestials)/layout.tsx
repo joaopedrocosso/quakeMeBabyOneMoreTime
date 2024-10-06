@@ -9,7 +9,6 @@ const homeLayout = ({
   return (
     <div>
         {children}
-        <BottomNavBar />
     </div>
   )
 }
