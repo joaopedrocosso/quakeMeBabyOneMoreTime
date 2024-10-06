@@ -241,7 +241,7 @@ export const BottomNavBar = () => {
                                 <span>
                                     Upload any detection file in CSV format and provide the sampling rate of the data, and our app will take care of the rest.
                                 </span>
-                                <div className="w-full m-auto px-12 sm:px-8 sm:w-8/12 md:w-7/12 lg:w-6/12 xl:m-4/12 flex flex-col gap-2">
+                                <div className="pt-6 w-full m-auto px-12 sm:px-8 sm:w-8/12 md:w-7/12 lg:w-6/12 xl:m-4/12 flex flex-col gap-2">
                                     <div className="relative group w-full h-12 flex flex-row items-center justify-center">
                                         <div aria-hidden='true' className="absolute inset-0 w-full h-full rounded-xl bg-[#011221] bg-opacity-80 backdrop-blur-xl group-hover:bg-opacity-60 transition duration-300 shadow-3xl border border-[#000]"></div>
 
@@ -253,18 +253,11 @@ export const BottomNavBar = () => {
                                             className="text-white bg-[#00050C] rounded-md pl-2 border border-[#788CA0] relative z-10 w-20 h-8 ml-auto mr-4"
                                         />
 
-                                        <div className=" items-center absolute inset-0 w-full h-full flex cursor-pointer">
-                                            <div className="flex flex-row ml-4 gap-3">
-                                                <img 
-                                                    src="/docUpload.jpg" 
-                                                    alt="Upload Illustration" 
-                                                    className="w-5 m-auto sm:w-40"
-                                                />
-                                                <p className="space-x-2 block text-[#788CA0] text-md text-center">
-                                                    <span>Sampling rate</span>
-                                                    <strong>[Float]</strong>
-                                                </p>
-                                            </div>
+                                        <div className=" items-center absolute inset-0 w-full h-full flex cursor-pointer ml-4">
+                                            <p className="space-x-2 block text-[#788CA0] text-md text-center">
+                                                <span>Sampling rate</span>
+                                                <strong>[Float]</strong>
+                                            </p>
                                         </div>
                                     </div>
 
