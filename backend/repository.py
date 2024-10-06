@@ -44,7 +44,8 @@ def list_events(filter: models.EventFilter):
         filters.append(dbmodels.Catalog.starttime <= filter.endtime)
 
     if filter.body:
-        filters.append(dbmodels.Catalog.body <= filter.body)
+        filters.append(dbmodels.Catalog.body == filter.body)
+
     print(filter)
     print(filters)
     query = get_db().query(dbmodels.Catalog)
