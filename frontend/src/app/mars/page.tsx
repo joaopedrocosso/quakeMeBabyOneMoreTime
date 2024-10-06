@@ -3,8 +3,8 @@ import Mars from "@/components/Mars";
 
 const page = () => {
   return (
-    <Scene>
-      <Mars />
+    <Scene enableControl={true}>
+      <Mars isPageHome={false}/>
     </Scene>
   )
 }

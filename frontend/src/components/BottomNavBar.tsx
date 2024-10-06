@@ -238,6 +238,9 @@ export const BottomNavBar = () => {
                         <DialogHeader>
                             <DialogTitle>Make your analysis</DialogTitle>
                             <DialogDescription>
+                                <span>
+                                    Upload any detection file in CSV format and provide the sampling rate of the data, and our app will take care of the rest.
+                                </span>
                                 <div className="w-full m-auto px-12 sm:px-8 sm:w-8/12 md:w-7/12 lg:w-6/12 xl:m-4/12 flex flex-col gap-2">
                                     <div className="relative group w-full h-12 flex flex-row items-center justify-center">
                                         <div aria-hidden='true' className="absolute inset-0 w-full h-full rounded-xl bg-[#011221] bg-opacity-80 backdrop-blur-xl group-hover:bg-opacity-60 transition duration-300 shadow-3xl border border-[#000]"></div>

@@ -1,4 +1,12 @@
 import { useState } from "react";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "./ui/button"
+import { PiRocketLaunchFill } from "react-icons/pi";
 
 interface EventsProp {
   event: {
@@ -37,10 +45,21 @@ const ListItems = ( {event} : EventsProp) => {
   };
 
   return (
-    <li key={event.id} className="border border border-white w-full pt-4 pb-4 text-left pl-2 pr-2 lg:pl-4">
-      <p>{filename}</p>
-      <span>{dateTime} - {event.station}</span>
-    </li>
+    <Card key={event.id} className="bg-[#011221] border-none">
+      <CardHeader className="flex text-start pr-2 pb-2 pt-2 pb-2 justify-between">
+          <div className="items-center pl-4 pb-2">
+              <CardTitle className="text-white text-lg">{dateTime} - {event.station}</CardTitle>
+              <CardDescription className="px-4"><p>{filename}</p></CardDescription>
+          </div>
+          <div>
+            <Button 
+                className="px-4 py-4 bg-gradient-to-t from-[#4670DA] via-[#0AA9FA] to-[#00B2FF] hover:shadow-[0_14px_20px_rgba(41,140,234,0.5)] transition-all tracking-wide text-md"
+              >
+                <PiRocketLaunchFill className="w-5 h-5" />
+            </Button>
+          </div>
+      </CardHeader>
+    </Card>
   );
 };
 
