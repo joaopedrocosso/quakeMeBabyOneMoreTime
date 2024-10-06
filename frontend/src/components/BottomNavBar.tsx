@@ -15,10 +15,40 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "./ui/button";
 import NavBarItem from "./NavBarItem";
+import ListItems from "./ListItems";
+
+interface EventsItem {
+    id: number;
+    filename: string;
+    station: string;
+    starttime: string;
+}
 
 export const BottomNavBar = () => {
 
     const [activeButton, setActiveButton] = useState<string | null>(null);
+    const [data, setData] = useState([]);
+
+    const fetchAllData = async() => {
+        try{
+            const response = await fetch("http://localhost:8000/list_events", {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({})
+            });
+            const data = await response.json();
+
+            if(!data)
+                throw "Error"
+
+            console.log(data);
+            setData(data);
+        } catch(error) {
+            console.log(error);
+        } finally {
+            return
+        }
+    }
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#011221] shadow-md md:hidden">
@@ -47,7 +77,7 @@ export const BottomNavBar = () => {
                 </Dialog>
 
                 <Dialog>
-                    <DialogTrigger asChild>
+                    <DialogTrigger asChild onPointerDown={() => fetchAllData()}>
                         <div className="w-full">
                             <NavBarItem 
                                 label="EVENTS" 
@@ -57,13 +87,18 @@ export const BottomNavBar = () => {
                             />
                         </div>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="overflow-auto">
                         <DialogHeader>
                             <DialogTitle>Visualize an Event</DialogTitle>
                             <DialogDescription>
                                 <span>
                                     Select an event, watch it shaking the ground, being detected and analysed by our model, listen to how it would sound and view how the S.O.D.I.M. can help identifying and broadcasting the data back to Earth. 
                                 </span>
+                                <ul className="mt-8">
+                                    {data?.map((item: EventsItem) => (
+                                        <ListItems key={item.id} event={item}/>
+                                    ))}
+                                </ul>
                             </DialogDescription>
                         </DialogHeader>
                     </DialogContent>
