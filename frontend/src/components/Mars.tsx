@@ -6,14 +6,15 @@ import { useEffect, useRef, useState } from 'react';
 import MissionPoint from "@/components/MissionPoint"
 
 interface Props {
-  isPageHome: boolean
+  isPageHome: boolean;
+  isQuaking: boolean;
+  setIsQuaking: () => void;
 };
 
-export default function Mars({isPageHome}: Props) {
+export default function Mars({isPageHome, isQuaking, setIsQuaking}: Props) {
   const marsRef = useRef<THREE.Mesh>(null!);
   const { viewport, camera } = useThree();
   const colorMap = useTexture('/textures/mars/marsColorMap.jpg');
-  const [isQuaking, setIsQuaking] = useState(false);
 
   useEffect(() => {
     if (!isPageHome) {
@@ -30,9 +31,14 @@ export default function Mars({isPageHome}: Props) {
 		marsRef.current.rotation.x += 0.0001;
 	});
 
+  useEffect(() => {
+    console.log('mars', isQuaking);
+    if (!isQuaking) return;
+    quake();
+  }, [isQuaking]);
+
   const quake = () => {
     if (marsRef.current) {
-      setIsQuaking(true); 
       const initialPosition = marsRef.current.position.clone(); // Salvar posição inicial
 
       let quakeStart = performance.now(); // Tempo de início do tremor
@@ -48,7 +54,7 @@ export default function Mars({isPageHome}: Props) {
           return;
         }
 
-        const quakeStrength = 0.01; 
+        const quakeStrength = 0.05; 
         if (marsRef.current) { 
           marsRef.current.position.x = initialPosition.x + (Math.random() - 0.5) * quakeStrength;
           marsRef.current.position.y = initialPosition.y + (Math.random() - 0.5) * quakeStrength;
