@@ -1,8 +1,11 @@
-import React from 'react'
+import Scene from "@/components/Scene";
+import Moon from '@/components/Moon'
 
 const page = () => {
   return (
-    <div>page</div>
+    <Scene enableControl={true}>
+      <Moon isPageHome={false}/>
+    </Scene>
   )
 }
 

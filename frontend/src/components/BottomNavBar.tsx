@@ -65,11 +65,11 @@ export const BottomNavBar = () => {
     const closeDialog = () => setIsDialogOpen(false);
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#011221] shadow-md md:hidden">
-            <div className="flex justify-between items-center">
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#011221] shadow-md">
+            <div className="flex justify-start items-center">
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
-                        <div className="w-full">
+                        <div className="w-full md:w-auto">
                             <NavBarItem 
                                 label="MISSIONS" 
                                 icon={<GiPlanetCore />} 
@@ -107,7 +107,7 @@ export const BottomNavBar = () => {
                 {/* Outros Dialogs */}
                 <Dialog>
                     <DialogTrigger asChild onPointerDown={() => fetchAllData()}>
-                        <div className="w-full">
+                        <div className="w-full md:w-auto">
                             <NavBarItem 
                                 label="EVENTS" 
                                 icon={<WiEarthquake />} 
@@ -135,7 +135,7 @@ export const BottomNavBar = () => {
 
                 <Dialog>
                     <DialogTrigger asChild>
-                        <div className="w-full">
+                        <div className="w-full md:w-auto">
                             <NavBarItem 
                                 label="MODELS" 
                                 icon={<RiRobot2Fill />} 
@@ -225,7 +225,7 @@ export const BottomNavBar = () => {
                 {/* Analysis */}
                 <Dialog>
                     <DialogTrigger asChild>
-                        <div className="w-full">
+                        <div className="w-full md:w-auto">
                             <NavBarItem 
                                 label="ANALYSIS" 
                                 icon={<BiSolidReport />} 
