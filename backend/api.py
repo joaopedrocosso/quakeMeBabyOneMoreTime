@@ -1,7 +1,7 @@
 from typing import List
-from fastapi import Body, File, HTTPException, APIRouter, UploadFile
+from fastapi import Body, HTTPException, APIRouter
 
-from models import EventFilter, Catalog, UploadEvent, UserEventFilter, Data
+from models import EventFilter, Catalog, UploadEvent, UserEventFilter, Data, UserEvent
 import service
 
 
@@ -23,15 +23,15 @@ async def list_events(filter: EventFilter = Body(...)):
 async def get_event(event_id: str):
     return service.get_event(event_id)
 
-@router.post("/list_user_events", response_model=List[User])
+@router.post("/list_user_events", response_model=List[UserEvent])
 async def list_events(filter: UserEventFilter = Body(...)):
     return service.list_user_events(filter)
 
-@router.get("/user_event/{user_event_id}", response_model=Catalog)
+@router.get("/user_event/{user_event_id}", response_model=UserEvent)
 async def get_event(user_event_id: str):
     return service.get_user_event(user_event_id)
     
-@router.post("/upload_event/", response_model=Catalog)
+@router.post("/upload_event/", response_model=UserEvent)
 async def upload_event(upload_event: UploadEvent):
     if upload_event.file.content_type != 'text/csv':
         return {"error": "Wrong file type."}

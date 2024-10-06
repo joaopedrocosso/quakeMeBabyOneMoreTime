@@ -45,11 +45,3 @@ class UserEvent(Base):
     content = Column(LargeBinary)
     event = Column(String)
     audio = Column(LargeBinary)
-
-
-class event_audio(Base):
-    __tablename__ = 'event_audio'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    event_id = Column(Integer, ForeignKey('event.id'))
-    user_event_id = Column(Integer, ForeignKey('user_event.id'))
-    audio = Column(LargeBinary)
