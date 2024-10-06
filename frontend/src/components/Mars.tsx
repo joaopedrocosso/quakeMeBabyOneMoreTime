@@ -2,7 +2,7 @@
 import { useTexture, Sphere, useGLTF, SpotLight } from '@react-three/drei';
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from 'three';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import MissionPoint from "@/components/MissionPoint"
 
 interface Props {
@@ -11,9 +11,16 @@ interface Props {
 
 export default function Mars({isPageHome}: Props) {
   const marsRef = useRef<THREE.Mesh>(null!);
-  const {viewport} = useThree();
+  const { viewport, camera } = useThree();
   const colorMap = useTexture('/textures/mars/marsColorMap.jpg');
   const [isQuaking, setIsQuaking] = useState(false);
+
+  useEffect(() => {
+    if (!isPageHome) {
+      camera.position.set(-70, 12, -70); 
+      camera.lookAt(0, 0, 0); 
+    } 
+  }, [isPageHome, camera]);
 
   useFrame(() => {
     if(!isPageHome)
@@ -58,7 +65,7 @@ export default function Mars({isPageHome}: Props) {
 
   return (
     <group scale={viewport.width / 8}>
-      <Sphere ref={marsRef} args={[1, 64, 64]} castShadow receiveShadow position={isPageHome ? [-1.9, 0, 0] : [0, 0.15, 0]}>
+      <Sphere ref={marsRef} args={[1, 64, 64]} castShadow receiveShadow position={isPageHome ? [-1.9, 0, 0] : [0, 0, 0]}>
         <meshStandardMaterial
           map={colorMap}
           bumpScale={0.1}

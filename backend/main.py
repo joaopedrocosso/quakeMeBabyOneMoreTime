@@ -15,5 +15,5 @@ app.add_middleware(
 
 
 @app.get("/ping")
-def pin():
+def ping():
     return "pong"
