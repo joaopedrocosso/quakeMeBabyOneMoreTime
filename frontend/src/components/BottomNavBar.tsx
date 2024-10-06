@@ -13,15 +13,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Button } from "./ui/button";
 import NavBarItem from "./NavBarItem";
 import ListItems from "./ListItems";
@@ -34,6 +32,8 @@ interface EventsItem {
 }
 import { Badge } from "@/components/ui/badge"
 import { PlanetTravelCard } from "./PlanetTravelCard";
+import { DatePicker } from "./DatePicker";
+import Image from "next/image";
 
 export const BottomNavBar = () => {
 
@@ -119,11 +119,44 @@ export const BottomNavBar = () => {
                     <DialogContent className="overflow-auto">
                         <DialogHeader>
                             <DialogTitle className="md:text-center">Visualize an Event</DialogTitle>
-                            <DialogDescription className="max-w-2xl m-auto">
+                            <DialogDescription>
                                 <span className="md:text-center">
                                     Select an event, watch it shaking the ground, being detected and analysed by our model, listen to how it would sound and view how the S.O.D.I.M. can help identifying and broadcasting the data back to Earth. 
                                 </span>
-                                <div className="mt-8">
+                                
+                                <div className="mt-6 flex flex-col gap-2">
+                                    <h1 className="font-semibold text-white text-lg">
+                                        Filters
+                                    </h1>
+                                    <div className="flex flex-row gap-2 w-full">
+                                        <Select>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue className="" placeholder="Select a date" />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-black">
+                                                <SelectItem value="light">Light</SelectItem>
+                                                <SelectItem value="dark">Dark</SelectItem>
+                                                <SelectItem value="system">System</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+
+                                        <Select>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue className="" placeholder="Select a date" />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-black">
+                                                <SelectItem value="light">Light</SelectItem>
+                                                <SelectItem value="dark">Dark</SelectItem>
+                                                <SelectItem value="system">System</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+
+                                <div className="mt-6 flex flex-col gap-2">
+                                    <h1 className="font-semibold text-white text-lg">
+                                        Events
+                                    </h1>
                                     {data?.map((item: EventsItem) => (
                                         <ListItems key={item.id} event={item}/>
                                     ))}
@@ -149,7 +182,7 @@ export const BottomNavBar = () => {
                         <DialogHeader>
                             <DialogTitle>The Model</DialogTitle>
                             <DialogDescription>
-                                <div className="flex flex-col gap-0.2">
+                                <div className="flex text-[#ffffff98] flex-col gap-0.2">
                                     <span>
                                         The seismic detection data consists of measurements of the velocity in m/s at which waves propagate through rocks. 
                                     </span>
@@ -183,6 +216,19 @@ export const BottomNavBar = () => {
                                             <strong>and acceleration of the seismic waves</strong>.
                                         </li>
                                     </ul>
+                                    <br />
+                                    <div className="flex flex-col gap-3">
+                                        <Image 
+                                            src='/model/processing.gif'
+                                            className="rounded-lg mx-auto" 
+                                            width={600} 
+                                            height={338} 
+                                            alt="Processing Gif"
+                                        />
+                                        <p className="italic text-center">
+                                            1. Processing the model
+                                        </p>
+                                    </div>
                                     <br/>
                                     <span>
                                         This data is generated through a sliding window over the measurements, producing relevant insights for understanding quakes on the surfaces of the Moon and Mars.
@@ -200,7 +246,22 @@ export const BottomNavBar = () => {
                                     <span>
                                         Thus, to identify the onset of an earthquake, we simply used the model to classify the data and find the relative time of the first record considered by the model as an quake, which consequently allowed us to determine the beginning of a seismic event.
                                     </span>
+
                                     <br />
+                                    <div className="flex flex-col gap-3">
+                                        <Image 
+                                            src='/model/training.gif' 
+                                            className="rounded-lg mx-auto"
+                                            width={600} 
+                                            height={338} 
+                                            alt="Training Gif"
+                                        />
+                                        <p className="italic text-center">
+                                            2. Training the model
+                                        </p>
+                                    </div>
+                                    <br />
+
                                     <span>
                                         Based on this data, a deep neural network model was developed and trained using the Adam optimizer with a Mean Squared Error (MSE) loss function and 100 training epochs with early stopping. 
                                     </span>
@@ -209,6 +270,19 @@ export const BottomNavBar = () => {
                                         The ideal architecture of the model was observed to be:
                                     </span>
                                     <br />
+                                    <div className="flex flex-col gap-3">
+                                        <Image 
+                                            src='/model/architecture.gif'
+                                            className="rounded-lg mx-auto" 
+                                            width={600} 
+                                            height={338} 
+                                            alt="Architecture Gif"
+                                        />
+                                        <p className="italic text-center">
+                                            3. Model Architecture
+                                        </p>
+                                    </div>
+                                    <br />
                                     <span>
                                         Through this process, the Seismic Onset Detection Intelligent Model (S.O.D.I.M.) was born, capable of identifying the onset of seismic events and differentiating them from noise in the signals, allowing for a reduction in the volume of data that should be transmitted back to Earth by the probe.
                                     </span>
@@ -216,6 +290,20 @@ export const BottomNavBar = () => {
                                     <span>
                                         In this way, S.O.D.I.M. enables the transmission of only relevant data that can be used in studies to aid in understanding the interiors of remarkable planetary bodies such as the Moon and Mars. 
                                     </span>
+                                    <br />
+                                    <div className="flex flex-col gap-3">
+                                        <Image 
+                                            src='/model/inference.gif'
+                                            className="rounded-lg mx-auto" 
+                                            width={600} 
+                                            height={338} 
+                                            alt="Inference Gif"
+                                        />
+                                        <p className="italic text-center">
+                                            4. Inference
+                                        </p>
+                                    </div>
+                                    <br />
                                 </div>
                             </DialogDescription>
                         </DialogHeader>
@@ -241,7 +329,7 @@ export const BottomNavBar = () => {
                                 <span>
                                     Upload any detection file in CSV format and provide the sampling rate of the data, and our app will take care of the rest.
                                 </span>
-                                <div className="pt-6 w-full m-auto px-12 sm:px-8 sm:w-8/12 md:w-7/12 lg:w-6/12 xl:m-4/12 flex flex-col gap-2">
+                                <div className="pt-6 w-full m-auto px-12 sm:px-8 sm:w-8/12 md:w-96 lg:w-8/12 xl:m-4/12 flex flex-col gap-2">
                                     <div className="relative group w-full h-12 flex flex-row items-center justify-center">
                                         <div aria-hidden='true' className="absolute inset-0 w-full h-full rounded-xl bg-[#011221] bg-opacity-80 backdrop-blur-xl group-hover:bg-opacity-60 transition duration-300 shadow-3xl border border-[#000]"></div>
 
@@ -289,7 +377,7 @@ export const BottomNavBar = () => {
                             </DialogDescription>
                         </DialogHeader>
 
-                        <DialogFooter className="mx-auto my-12">
+                        <DialogFooter className="mx-auto my-12 md:my-0">
                             <Button className="px-12 py-4 bg-gradient-to-t from-[#4670DA] via-[#0AA9FA] to-[#00B2FF] hover:shadow-[0_14px_20px_rgba(41,140,234,0.5)] transition-all tracking-wide text-md">
                                 Submit
                             </Button>
