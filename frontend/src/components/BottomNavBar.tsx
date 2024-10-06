@@ -35,29 +35,54 @@ import { Checkbox } from "@/components/ui/checkbox"
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
+interface BodyProps { 
+    station?: string | null;
+    starttime?: string | null;
+    body: string | null;
+}
+
 export const BottomNavBar = () => {
 
     const [activeButton, setActiveButton] = useState<string | null>(null);
     const [data, setData] = useState([]);
+    const [station, setStation] = useState("");
+    const [dateInitial, setDateInitial] = useState("");
 
 
     const pathname = usePathname();
-    console.log(pathname)
+    const isMoon = pathname.includes("/moon");
+
+    function getTimestamp(date: string) {
+        const pad = (n,s=2) => (`${new Array(s).fill(0)}${n}`).slice(-s);
+        const d = new Date(date);
+        
+        return `${pad(d.getFullYear(),4)}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
 
     const fetchAllData = async() => {
         try{
+
+            const reqBody:BodyProps = {
+                "body": isMoon ? "lunar" : "mars"
+            }
+
+            if(station) reqBody["station"] = station;
+            if(dateInitial) reqBody["starttime"] = dateInitial;
+
+            setData([]);
+
             const response = await fetch("http://localhost:8000/list_events", {
                 method: "POST",
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({})
+                body: JSON.stringify(reqBody)
             });
             const data = await response.json();
 
             if(!data)
                 throw "Error"
-
-            console.log(data);
+            
             setData(data);
+
         } catch(error) {
             console.log(error);
         } finally {
@@ -134,34 +159,37 @@ export const BottomNavBar = () => {
                                     </h1>
                                     <div className="flex flex-row gap-2 w-full">
 
-                                        {pathname.includes("/moon") ? (
-                                            <Select>
+                                        {isMoon && (
+                                            <Select onValueChange={(e)=> setStation(e)}>
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select the probe" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="s12">s12</SelectItem>
-                                                    <SelectItem value="s15">s15</SelectItem>
-                                                    <SelectItem value="s16">s16</SelectItem>
+                                                    <SelectItem value="S12">Apollo 12</SelectItem>
+                                                    <SelectItem value="S15">Apollo 15</SelectItem>
+                                                    <SelectItem value="S16">Apollo 16</SelectItem>
                                                 </SelectContent>
                                             </Select>
-                                        ) : (
-                                            <div className="flex flex-row w-full items-center gap-4">
-                                                <Checkbox id="insightLander" />
-                                                <label htmlFor="insightLander" className="text-white text-[16px]">
-                                                    InSight Lander
-                                                </label>
-                                            </div>
                                         )}
 
-                                        <Select>
+                                        <Select onValueChange={(e)=> setDateInitial(e)}>
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Choose the date" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="light">01/10/1976</SelectItem>
+                                                {
+                                                    data.map((item:{starttime: string})=> {
+                                                        const newDate = getTimestamp(item.starttime);
+                                                        return(
+                                                            <SelectItem value={item.starttime}>{newDate}</SelectItem>
+                                                        )
+                                                    })
+                                                }
                                             </SelectContent>
                                         </Select>
+                                        <Button onClick={() => fetchAllData()} className="px-12 py-4 bg-gradient-to-t from-[#4670DA] via-[#0AA9FA] to-[#00B2FF] hover:shadow-[0_14px_20px_rgba(41,140,234,0.5)] transition-all tracking-wide text-md">
+                                            Submit
+                                        </Button>
                                     </div>
                                 </div>
 
@@ -169,9 +197,9 @@ export const BottomNavBar = () => {
                                     <h1 className="font-semibold text-white text-lg">
                                         Events
                                     </h1>
-                                    {data?.map((item: EventsItem) => (
+                                    {data.length > 0 ? data?.map((item: EventsItem) => (
                                         <ListItems key={item.id} event={item}/>
-                                    ))}
+                                    )):(<p className="mt-3 text-white text-center m-auto">Loading ...</p>)}
                                 </div>
                             </DialogDescription>
                         </DialogHeader>
