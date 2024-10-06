@@ -1,5 +1,5 @@
 ### Prepare enviment
-Make sure you have installed Python12
+Make sure you have installed Python12 and created and environment (venv, conda, etc)
 
 ### Install dependencies:
 ```bash
