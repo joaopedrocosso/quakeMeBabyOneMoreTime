@@ -1,11 +1,11 @@
-import io
+import copy
+from io import StringIO
 import wave
+from data_predict import predict
 from fastapi.responses import FileResponse
 import numpy as np
 import pandas as pd
 from scipy.io.wavfile import write
-from tensorflow.keras.models import load_model
-
 
 from models import DataFilter, EventFilter, UserEventFilter
 import repository
@@ -37,22 +37,22 @@ def save_event(upload_event: object, content: bytes, result: str, audio: bytes):
 def process_event(upload_event: object, content: bytes, sampling_rate: float):
     from io import BytesIO
 
-    with open('file.pkl', 'rb') as arquivo_modelo:
-        modelo = load_model(arquivo_modelo)
-    dados = pd.read_csv(BytesIO(content))
-    # Faz previsões usando o modelo carregado
-    previsoes = modelo.predict(dados)
+    dados = pd.read_csv(StringIO(content.decode("utf-8")))
+    print(dados)
 
-    convert_to_audio(upload_event.filename, dados['velocity'])
+    previsao = predict(dados, sampling_rate, upload_event.filename)
 
-    with open(upload_event.filename, 'rb') as file:
+    convert_to_audio(upload_event.filename, dados['velocity(m/s)'])
+
+    with open(upload_event.filename + '.wav', 'rb') as file:
                 wav_bytes = file.read()
 
-    return save_event(upload_event, BytesIO(content), previsoes, wav_bytes), FileResponse(path="./", media_type='audio/mpeg', filename=upload_event.filename +'.wav')
+    return save_event(upload_event, BytesIO(content), bool(previsao.y_pred), wav_bytes), FileResponse(path="./", media_type='audio/mpeg', filename=upload_event.filename +'.wav')
 
 
 def listen_event(event_id: str):
     event = get_event(event_id)
+    print(event)
 
     if event.audio is None:
 
@@ -60,7 +60,7 @@ def listen_event(event_id: str):
     
         convert_to_audio(event.filename, [float(d.velocity) for d in data_list])
 
-        with wave.open("seu_arquivo.wav", "rb") as wav_file:
+        with wave.open(event.filename + ".wav", "rb") as wav_file:
             frames = wav_file.readframes(wav_file.getnframes())
             repository.update_event(event, frames)
 
