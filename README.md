@@ -4,9 +4,6 @@ Make sure you have installed Docker or Docker Desktop in your machine.
 
 In a terminal navigate to the root of the project and run the following command:
 
-```bash
-
-Run the docker compose:
 
 ```bash
 docker compose up

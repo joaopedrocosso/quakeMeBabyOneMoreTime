@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from fastapi import UploadFile, File
+from fastapi import Form, UploadFile, File
 
 from pydantic import BaseModel
 
@@ -9,14 +9,15 @@ class EventFilter(BaseModel):
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
     station: Optional[str] = None
+    body: Optional[str] = None
 
 class UserEventFilter(BaseModel):
     start_date: Optional[datetime] = None
     end_date: Optional[datetime] = None
 
-class UploadEvent(BaseModel):
-    file: UploadFile = File(...)
-    sampling_rate: float
+class DataFilter(BaseModel):
+    catalog_id: Optional[int] = None
+    evid: Optional[str] = None
 
 class UserSeismicDetectionCreate(BaseModel):
     filename: str
@@ -59,3 +60,4 @@ class UserEvent(BaseModel):
     content: bytes
     event: str
     audio: bytes
+    analysis_date: datetime

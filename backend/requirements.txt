@@ -8,3 +8,6 @@ psycopg2
 sqlalchemy
 python-dotenv
 pandas
+python-multipart
+tensorflow
+keras
