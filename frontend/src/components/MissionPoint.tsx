@@ -16,7 +16,7 @@ export default function MissionPoint({lat, lon, image, imgWidth, imgHeight}: Pro
     const theta = (lon + 180) * (Math.PI / 180); 
 
     const x = -(radius * Math.sin(phi) * Math.cos(theta));
-    const y = radius * Math.cos(phi);
+    const y = (radius * Math.cos(phi)) + 0.15;
     const z = radius * Math.sin(phi) * Math.sin(theta);
 
     return new THREE.Vector3(x, y, z);
