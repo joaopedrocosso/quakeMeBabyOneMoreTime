@@ -45,14 +45,14 @@ const SceneWithCursor = ({children} : {children: React.ReactNode}) => {
         onPointerDown={() => setIsDragging(true)}
         onPointerUp={() => setIsDragging(false)}
         shadows
-        camera={{ position: [0, 0, 5], fov: 45 }}
+        camera={{ position: [0, 0, 5], fov: 40 }}
       >
 
         <StarryBackground />
   
         {/* <directionalLight
             position={[-10, 12, 18]}
-            intensity={3}
+            intensity={4}
         /> */}
 
         <ambientLight 
