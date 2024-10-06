@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from config import DATABASE_URL
 import database_models as dbmodels
 import models
@@ -79,17 +81,19 @@ def get_user_event_by_id(event_id: int):
     return get_db().query(dbmodels.UserEvent).filter(dbmodels.UserEvent.id == event_id).first()
 
 
-def save_event(event: object, content: bytes, result: str, audio: bytes):
+def save_event(event: object, content: bytes, result: bool, audio: bytes, sampling_rate: float):
     new_event = dbmodels.UserEvent()
     new_event.filename = event.filename
     new_event.content = content
     new_event.event = result
     new_event.audio = audio
+    new_event.analysis_date = datetime.now()
+    new_event.sampling_rate = sampling_rate
 
-    get_db().query(dbmodels.UserEvent)
-    get_db().add(new_event)
-    get_db().commit()
-    get_db().refresh(new_event)
+    with get_db() as db:
+        db.add(new_event)
+        db.commit()
+        db.refresh(new_event)
 
     return new_event
 

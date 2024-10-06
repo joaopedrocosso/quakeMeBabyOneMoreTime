@@ -31,8 +31,8 @@ def list_user_events(filter: list):
 def get_user_event(event_id: str):
     return repository.get_user_event_by_id(event_id)
 
-def save_event(upload_event: object, content: bytes, result: str, audio: bytes):
-    repository.save_event(upload_event, content, result, audio)
+def save_event(upload_event: object, content: bytes, result: bool, audio: bytes, sampling_rate: float):
+    return repository.save_event(upload_event, content, result, audio, sampling_rate)
 
 def process_event(upload_event: object, content: bytes, sampling_rate: float):
     from io import BytesIO
@@ -47,7 +47,9 @@ def process_event(upload_event: object, content: bytes, sampling_rate: float):
     with open(upload_event.filename + '.wav', 'rb') as file:
                 wav_bytes = file.read()
 
-    return save_event(upload_event, BytesIO(content), bool(previsao.y_pred), wav_bytes), FileResponse(path="./", media_type='audio/mpeg', filename=upload_event.filename +'.wav')
+    content_bytes = BytesIO(content).read()
+
+    return save_event(upload_event, content_bytes, bool(previsao.y_pred.values[0]), wav_bytes, sampling_rate), FileResponse(path="./", media_type='audio/mpeg', filename=upload_event.filename +'.wav')
 
 
 def listen_event(event_id: str):
