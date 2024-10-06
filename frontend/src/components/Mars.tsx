@@ -53,12 +53,12 @@ export default function Mars({isPageHome}: Props) {
 
   const coordinates = [
 		{ lat: 4.502384, lon: 135.623447, identifier: "Insight", id: 1},
-		{ lat: 25, lon: -213, identifier: "Elysium Mons", id: 2},
+		// { lat: 25, lon: -213, identifier: "Elysium Mons", id: 2},
 	]
 
   return (
     <group scale={viewport.width / 8}>
-      <Sphere ref={marsRef} args={[1, 64, 64]} castShadow receiveShadow position={isPageHome ? [-1.9, 0, 0] : [0, 0.2, 0]}>
+      <Sphere ref={marsRef} args={[1, 64, 64]} castShadow receiveShadow position={isPageHome ? [-1.9, 0, 0] : [0, 0, 0]}>
         <meshStandardMaterial
           map={colorMap}
           bumpScale={0.1}
@@ -68,7 +68,7 @@ export default function Mars({isPageHome}: Props) {
       </Sphere>
       {
 				coordinates.map((item) =>
-					<MissionPoint key={item.id} lat={item.lat} lon={item.lon} identifier={item.identifier}/>
+					<MissionPoint key={item.id} lat={item.lat} lon={item.lon} identifier={item.identifier} image='/missions/insight.png' imgWidth={0.340} imgHeight={0.09649} />
 				)
 			}
 
