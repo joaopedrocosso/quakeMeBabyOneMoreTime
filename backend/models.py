@@ -6,8 +6,8 @@ from pydantic import BaseModel
 
 
 class EventFilter(BaseModel):
-    start_date: Optional[datetime] = None
-    end_date: Optional[datetime] = None
+    starttime: Optional[datetime] = None
+    endtime: Optional[datetime] = None
     station: Optional[str] = None
     body: Optional[str] = None
 
