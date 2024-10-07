@@ -24,11 +24,11 @@ export default function Moon({isPageHome}: Props) {
     } 
   }, [isPageHome, camera]);
 
-  useFrame(() => {
-    if (!isPageHome) return;
-    mesh.current.rotation.y += 0.004;
-    mesh.current.rotation.x += 0.0001;
-  });
+  // useFrame(() => {
+  //   if (!isPageHome) return;
+  //   mesh.current.rotation.y += 0.004;
+  //   mesh.current.rotation.x += 0.0001;
+  // });
 
   const apolloCoordinates = [
     { lat: -3.1975, lon: -23.3856, identifier: "Apollo 12", image: "/missions/apollo12.png", id: 12 },

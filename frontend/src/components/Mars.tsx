@@ -23,13 +23,13 @@ export default function Mars({isPageHome, isQuaking, setIsQuaking}: Props) {
     } 
   }, [isPageHome, camera]);
 
-  useFrame(() => {
-    if(!isPageHome)
-      return
+  // useFrame(() => {
+  //   if(!isPageHome)
+  //     return
 
-		marsRef.current.rotation.y += 0.004;
-		marsRef.current.rotation.x += 0.0001;
-	});
+	// 	marsRef.current.rotation.y += 0.001;
+	// 	marsRef.current.rotation.x += 0.000;
+	// });
 
   useEffect(() => {
     console.log('mars', isQuaking);

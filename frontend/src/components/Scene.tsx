@@ -103,7 +103,6 @@ export default function Scene({ children, enableControl }: Props) {
       >
         {children}
       </SceneWithCursor>
-      <BottomNavBar />
     </div>
   );
 }

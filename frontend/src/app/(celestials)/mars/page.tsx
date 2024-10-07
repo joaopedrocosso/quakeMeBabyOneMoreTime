@@ -119,7 +119,7 @@ export default function MarsPage () {
 
   return (
     <>
-      <div className="hidden lg:flex align-center absolute z-10 left-20 lg:left-40 h-screen">
+      <div className="hidden lg:flex align-center absolute bottom-8 z-10 left-18 lg:left-32 h-screen">
         <CelestialInfoCard title={infos.title} description={infos.description} info={infos.info} />
       </div>
       <div className="hidden lg:flex align-center absolute z-10 right-20 lg:right-40 h-screen">
@@ -129,27 +129,56 @@ export default function MarsPage () {
         <Dialog>
           <DialogTrigger asChild>
             <div className="absolute top-32 w-full z-10 text-center m-auto">
-              <button className="text-white rounded-3xl border border-white w-48 h-12 lg:w-52 lg:h-14 text-base hover:bg-gray-900">
+              <button className="font-semibold text-white backdrop-blur-sm bg-[#01122150] py-3 px-8 rounded-lg border border-[#011221] shadow-[0_0px_20px_rgba(41,140,234,0.4)] hover:bg-[rgba(41,140,234,0.1)] transition-all">
                 Show Data
               </button> 
             </div>
           </DialogTrigger>
           <DialogContent className="pt-1 text-sm text-white overflow-auto">
             <DialogHeader>
-              <DialogTitle className="text-center text-white mt-2">{infos.title}</DialogTitle>
+              <DialogTitle className="text-center text-white mt-5">
+                {infos.title}
+              </DialogTitle>
               <DialogDescription className="text-white max-w-2xl m-auto">
                 <span className="text-center">
                   {infos.description}
                 </span>
                 <div className="mt-8">
                   <ol>
-                      <li><b>filename:</b> {infos.info.filename}</li>
-                      <li><b>location:</b> {infos.info.location}</li>
-                      <li><b>starttime:</b> {infos.info.starttime}</li>
-                      <li><b>endtime:</b> {infos.info.endtime}</li>
-                      <li><b>sampling_rate:</b> {infos.info.sampling_rate}</li>
-                      <li><b>endtime:</b> {infos.info.endtime}</li>
-                      <li><b>sampling_rate:</b> {infos.info.sampling_rate}</li>
+                      <li className="flex flex-col gap-2 justify-center items-start px-2 mt-2 border-none">
+                        <p className="font-semibold text-[#9EAFC6]">Filename</p>
+                        <div className="bg-[#011221] px-8 py-4 rounded-lg">
+                          {infos.info.filename}
+                        </div>
+                      </li>
+
+                      <li className="flex flex-col gap-2 justify-center items-start px-2 mt-2 border-none">
+                        <p className="font-semibold text-[#9EAFC6]">Location</p>
+                        <div className="bg-[#011221] px-8 py-4 rounded-lg">
+                          {infos.info.location}
+                        </div>
+                      </li>
+
+                      <li className="flex flex-col gap-2 justify-center items-start px-2 mt-2 border-none">
+                        <p className="font-semibold text-[#9EAFC6]">Start time</p>
+                        <div className="bg-[#011221] px-8 py-4 rounded-lg">
+                          {infos.info.starttime}
+                        </div>
+                      </li>
+
+                      <li className="flex flex-col gap-2 justify-center items-start px-2 mt-2 border-none">
+                        <p className="font-semibold text-[#9EAFC6]">End time</p>
+                        <div className="bg-[#011221] px-8 py-4 rounded-lg">
+                          {infos.info.endtime}
+                        </div>
+                      </li>
+
+                      <li className="flex flex-col gap-2 justify-center items-start px-2 mt-2 border-none">
+                        <p className="font-semibold text-[#9EAFC6]">Sampling rate</p>
+                        <div className="bg-[#011221] px-8 py-4 rounded-lg">
+                          {infos.info.sampling_rate}
+                        </div>
+                      </li>
                   </ol>
                 </div>
               </DialogDescription>
