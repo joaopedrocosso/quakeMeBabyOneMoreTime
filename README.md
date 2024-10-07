@@ -1,3 +1,5 @@
+![Logo](https://github.com/user-attachments/assets/7c77b116-7f2d-4d84-af93-abdff0f84f35)
+
 # Readme for the front-end/back-end application
 
 Make sure you have installed Docker or Docker Desktop in your machine.
@@ -37,3 +39,11 @@ And the backend will be available at http://localhost:8000
 
 ### Test Partition from Training Dataset - 20% of the csv/mseed files from lunar/training and mars/training folders:
 ![Test Partition from Training Dataset](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/assets/image.png)
+
+## Interface
+
+![Captura de tela 2024-10-06 235327](https://github.com/user-attachments/assets/5484fa98-c4c7-425f-b6d5-96710a154e1f)
+![Captura de tela 2024-10-06 235203](https://github.com/user-attachments/assets/5ec6e05a-3a3c-42d0-84b4-876add723c69)
+![Captura de tela 2024-10-06 235211](https://github.com/user-attachments/assets/ed59eae9-0079-4a68-bbaa-5940c463dd59)
+![Captura de tela 2024-10-06 235247](https://github.com/user-attachments/assets/43671440-873e-4c0f-8651-4662da29abd5)
+![Captura de tela 2024-10-06 235311](https://github.com/user-attachments/assets/54aede15-ed11-45ab-927b-577218aa6d61)
