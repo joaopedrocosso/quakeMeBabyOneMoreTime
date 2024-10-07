@@ -64,7 +64,7 @@ const TutorialComponent = ({ isDialogOpen, setIsDialogOpen }) => {
                 </CarouselItem>
                 <CarouselItem className="w-82 flex flex-col items-center">
                     <Image
-                    src="/model.png"
+                    src="/events.png"
                     className="rounded-lg"
                     width={274}
                     height={58}
