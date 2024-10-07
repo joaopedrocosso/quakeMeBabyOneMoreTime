@@ -37,7 +37,7 @@ def predict(df_data_csv, sampling_rate, filename):
     temp = copy.deepcopy(df_data_csv)
     temp.drop(['time_abs(%Y-%m-%dT%H:%M:%S.%f)', 'filename'], axis=1, inplace=True)
 
-    model = load_model('./model/best_model_nasa.keras')
+    model = load_model('.//best_model_nasa.keras')
     y_pred = model.predict(temp, verbose=2)
     df_data_csv['y_pred'] = (y_pred > 0.5).astype(int)  # Convert to 0 or 1
 

@@ -96,8 +96,58 @@ export const BottomNavBar = () => {
         }
     }
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-
     const closeDialog = () => setIsDialogOpen(false);
+
+    const [samplingRate, setSamplingRate] = useState('');
+    const [csvFile, setCsvFile] = useState(null);
+
+    const handleSamplingRateChange = (event: any) => {
+        const { value } = event.target;
+       
+        if (!isNaN(value) && value.trim() !== '') {
+            setSamplingRate(value);
+        } else {
+
+            console.log("Por favor, insira um número válido.");
+        }
+    };
+
+    const handleFileChange = (event: any) => {
+        setCsvFile(event.target.files[0]);
+    };
+
+    const handleSubmit = async (event: any) => {
+        event.preventDefault();
+    
+        const formData = new FormData();
+        formData.append('spRate', samplingRate);
+        
+        if (csvFile) {
+            formData.append('csvFile', csvFile);
+        }
+
+        for (const [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
+    
+        try {
+            const response = await fetch('http://127.0.0.1:8000/upload_event', {
+                method: 'POST',
+                body: formData,
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json(); // Captura a resposta de erro para melhor entendimento
+                throw new Error(`Network response was not ok: ${errorData.message}`);
+            }
+    
+            const data = await response.json();
+            console.log('Success:', data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+    
 
     return (
         <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#011221] shadow-md">
@@ -357,7 +407,7 @@ export const BottomNavBar = () => {
                 </Dialog>
 
                 {/* Analysis */}
-                <Dialog>
+                {/* <Dialog>
                     <DialogTrigger asChild>
                         <div className="w-full md:w-auto">
                             <NavBarItem 
@@ -383,6 +433,8 @@ export const BottomNavBar = () => {
                                             type="number" 
                                             name="spRate"
                                             id="spRate"
+                                            value={samplingRate}
+                                            onChange={handleSamplingRateChange}
                                             placeholder="6.625"
                                             className="text-white bg-[#00050C] rounded-md pl-2 border border-[#788CA0] relative z-10 w-20 h-8 ml-auto mr-4"
                                         />
@@ -402,6 +454,7 @@ export const BottomNavBar = () => {
                                             name="csvFile"
                                             id="csvFile"
                                             accept=".csv"
+                                            onChange={handleFileChange}
                                             className="relative z-10 opacity-0 w-full h-full"
                                         />
 
@@ -424,12 +477,15 @@ export const BottomNavBar = () => {
                         </DialogHeader>
 
                         <DialogFooter className="mx-auto my-12 md:my-0">
-                            <Button className="px-12 py-4 bg-gradient-to-t from-[#4670DA] via-[#0AA9FA] to-[#00B2FF] hover:shadow-[0_14px_20px_rgba(41,140,234,0.5)] transition-all tracking-wide text-md">
+                            <Button 
+                                className="px-12 py-4 bg-gradient-to-t from-[#4670DA] via-[#0AA9FA] to-[#00B2FF] hover:shadow-[0_14px_20px_rgba(41,140,234,0.5)] transition-all tracking-wide text-md"
+                                onClick={handleSubmit}
+                            >
                                 Submit
                             </Button>
                         </DialogFooter>
                     </DialogContent>
-                </Dialog>
+                </Dialog> */}
             </div>
         </nav>
     );
