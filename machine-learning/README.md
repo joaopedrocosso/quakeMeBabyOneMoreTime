@@ -6,7 +6,7 @@
 - test_datasets_output_catalog: Esta pasta contém os catálogos de dados exigidos pelo desafio, a descrição de todos os campos utilizados estão no arquivo [neural_network_evaluate.ipynb](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/neural_network_evaluate.ipynb)
 - utils: pasta de extração de features matemáticas utilizadas para complementar todos os dados já fornecidos pela NASA, estes dados são passados para o modelo durante seu treinamento.
 
-# Notebooks criados:
+## Notebooks criados:
 - No notebook [Lunar_test_data_extraction](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/Lunar_test_data_extraction.ipynb) temos a extração dos dados da pasta lunar/test
 - No notebook [Lunar_train_data_extraction](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/Lunar_train_data_extraction.ipynb) temos a extração dos dados da pasta lunar/train
 - No notebook [Mars_test_data_extraction](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/Lunar_test_data_extraction.ipynb) temos a extração dos dados da pasta mars/test
@@ -15,4 +15,9 @@
 - No notebook [neural_network_evaluate](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/neural_network_evaluate.ipynb) temos a avaliação da nossa rede neural, onde os catálogos de output são gerados usando os dados obtidos nos notebooks [Lunar_test_data_extraction](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/Lunar_test_data_extraction.ipynb) e [Mars_test_data_extraction](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/Lunar_test_data_extraction.ipynb)
 - No notebook [neural_network_training](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/neural_network_training.ipynb) temos o carregamento dos dados de treinamento criados a partir dos notebooks [Lunar_train_data_extraction](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/Lunar_train_data_extraction.ipynb) e [Mars_train_data_extraction](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/Lunar_train_data_extraction.ipynb), junto com a criação da nossa rede neural e sua avaliação.
 
-# Métricas do modelo de Rede Neural
+## Métricas do modelo de Rede Neural
+### Training Partition from Training Dataset - 80% of the csv/mseed files from lunar/training and mars/training folders:
+![Training Partition from Training Dataset](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/assets/image2.png)
+
+### Test Partition from Training Dataset - 20% of the csv/mseed files from lunar/training and mars/training folders
+![Test Partition from Training Dataset](https://github.com/joaopedrocosso/quakeMeBabyOneMoreTime/blob/main/machine-learning/assets/image.png)
