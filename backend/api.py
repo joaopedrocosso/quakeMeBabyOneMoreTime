@@ -24,7 +24,7 @@ async def get_event(event_id: str):
     return service.get_event(event_id)
 
 @router.get("/event/{event_id}/listen")
-async def listen_event(event_id: str):
+async def listen_event(event_id: int):
     return service.listen_event(event_id)
 
 @router.post("/list_user_events", response_model=List[UserEvent])
@@ -50,5 +50,5 @@ async def upload_event(sampling_rate: float = Form(...), file: UploadFile = File
     
 @router.get("/user_event/{user_event_id}/listen", response_model=UserEvent)
 async def listen_user_event(user_event_id: str):
-    return service.get_user_event(user_event_id)
+    return service.listen_user_event(user_event_id)
     

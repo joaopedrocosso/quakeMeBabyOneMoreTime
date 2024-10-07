@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from config import DATABASE_URL
 import database_models as dbmodels
 import models
@@ -21,12 +23,17 @@ def list_data(filter: models.DataFilter):
     filters = []
 
     if filter.evid:
-        filters.append(dbmodels.Data.evid >= filter.evid)
+        filters.append(dbmodels.Data.evid == filter.evid)
 
-    # if filter.catalog_id:
-    #     filters.append(dbmodels.Data.catalog_id >= filter.catalog_id)
+    if filter.catalog_id:
+        filters.append(dbmodels.Data.catalog_id == filter.catalog_id)
 
-    return get_db().query(dbmodels.Data).all()
+    query = get_db().query(dbmodels.Data)
+
+    if filters:
+        query = query.filter(and_(*filters))
+
+    return query.all()
 
 def get_data_by_id(event_id: int):
     return get_db().query(dbmodels.Data).filter(dbmodels.Data.id == event_id).first()
@@ -46,8 +53,6 @@ def list_events(filter: models.EventFilter):
     if filter.body:
         filters.append(dbmodels.Catalog.body == filter.body)
 
-    print(filter)
-    print(filters)
     query = get_db().query(dbmodels.Catalog)
 
     if filters:
@@ -79,25 +84,30 @@ def get_user_event_by_id(event_id: int):
     return get_db().query(dbmodels.UserEvent).filter(dbmodels.UserEvent.id == event_id).first()
 
 
-def save_event(event: object, content: bytes, result: str, audio: bytes):
+def save_event(event: object, content: bytes, result: bool, audio: bytes, sampling_rate: float):
     new_event = dbmodels.UserEvent()
     new_event.filename = event.filename
     new_event.content = content
     new_event.event = result
     new_event.audio = audio
+    new_event.analysis_date = datetime.now()
+    new_event.sampling_rate = sampling_rate
 
-    get_db().query(dbmodels.UserEvent)
-    get_db().add(new_event)
-    get_db().commit()
-    get_db().refresh(new_event)
+    with get_db() as db:
+        db.add(new_event)
+        db.commit()
+        db.refresh(new_event)
 
     return new_event
 
 def update_event(event: dbmodels.Catalog, audio: bytes):
-    event.audio = audio
 
-    get_db().query(dbmodels.Catalog)
-    get_db().commit()
-    get_db().refresh(event)
+    with get_db() as db:
+        if not db.is_modified(event):
+            event = db.merge(event)
+
+        event.audio = audio
+        db.commit()
+        db.refresh(event)
 
     return event
