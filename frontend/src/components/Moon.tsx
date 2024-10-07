@@ -27,11 +27,11 @@ export default function Moon({isPageHome, isQuaking, setIsQuaking}: Props) {
     } 
   }, [isPageHome, camera]);
 
-  useFrame(() => {
-    if (!isPageHome) return;
-    mesh.current.rotation.y += 0.004;
-    mesh.current.rotation.x += 0.0001;
-  });
+  // useFrame(() => {
+  //   if (!isPageHome) return;
+  //   mesh.current.rotation.y += 0.004;
+  //   mesh.current.rotation.x += 0.0001;
+  // });
 
 	useEffect(() => {
     console.log('mars', isQuaking);
