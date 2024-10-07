@@ -86,7 +86,7 @@ const TutorialComponent = ({ isDialogOpen, setIsDialogOpen }) => {
                     In the <strong>MODEL</strong> tab, you can find out how our model for analyzing seismic events, S.O.D.I.M., works.
                     </p>
                 </CarouselItem>
-                <CarouselItem className="w-82 flex flex-col items-center">
+                {/* <CarouselItem className="w-82 flex flex-col items-center">
                     <Image
                     src="/analysis.png"
                     className="rounded-lg"
@@ -97,7 +97,7 @@ const TutorialComponent = ({ isDialogOpen, setIsDialogOpen }) => {
                     <p className="text-center text-sm mt-4">
                     In the <strong>ANALYSIS</strong> tab, you can upload your own CSV detection file and see our model generating results!
                     </p>
-                </CarouselItem>
+                </CarouselItem> */}
                 <CarouselItem className="w-82 flex flex-col items-center justify-center">
                     <MdExplore className="h-40 w-40" />
                     <p className="mb-4 text-center text-sm mt-6">

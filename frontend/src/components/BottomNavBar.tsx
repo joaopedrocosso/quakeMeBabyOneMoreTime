@@ -401,7 +401,7 @@ export const BottomNavBar = () => {
                 </Dialog>
 
                 {/* Analysis */}
-                <Dialog>
+                {/* <Dialog>
                     <DialogTrigger asChild>
                         <div className="w-full md:w-auto">
                             <NavBarItem 
@@ -479,7 +479,7 @@ export const BottomNavBar = () => {
                             </Button>
                         </DialogFooter>
                     </DialogContent>
-                </Dialog>
+                </Dialog> */}
             </div>
         </nav>
     );
