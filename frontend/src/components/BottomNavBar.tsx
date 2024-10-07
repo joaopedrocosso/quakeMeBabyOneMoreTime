@@ -76,7 +76,7 @@ export const BottomNavBar = () => {
 
             setData([]);
 
-            const response = await fetch("http://localhost:8000/list_events", {
+            const response = await fetch("http://134.209.165.243:3000/list_events", {
                 method: "POST",
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(reqBody)
