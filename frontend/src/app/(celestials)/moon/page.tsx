@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client'
 import Scene from "@/components/Scene";
 import Moon from '@/components/Moon';
@@ -5,7 +6,7 @@ import TutorialComponent from "@/components/TutorialComponent";
 import { useEffect, useState } from "react";
 
 const Page = () => {
-
+  const [isQuaking, setIsQuaking] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {

@@ -24,12 +24,7 @@ import { Button } from "./ui/button";
 import NavBarItem from "./NavBarItem";
 import ListItems from "./ListItems";
 
-interface EventsItem {
-    id: number;
-    filename: string;
-    station: string;
-    starttime: string;
-}
+
 import { PlanetTravelCard } from "./PlanetTravelCard";
 import { Checkbox } from "@/components/ui/checkbox"
 import Image from "next/image";
@@ -41,10 +36,20 @@ interface BodyProps {
     body: string | null;
 }
 
+
+interface EventsItem {
+    id: number;
+    filename: string;
+    station: string;
+    starttime: string;
+}
+
+
 export const BottomNavBar = () => {
 
     const [activeButton, setActiveButton] = useState<string | null>(null);
     const [data, setData] = useState([]);
+    const [oldData, setOldData] = useState([]);
     const [station, setStation] = useState("");
     const [dateInitial, setDateInitial] = useState("");
 
@@ -71,7 +76,7 @@ export const BottomNavBar = () => {
 
             setData([]);
 
-            const response = await fetch("http://localhost:8000/list_events", {
+            const response = await fetch("http://134.209.165.243:3000/list_events", {
                 method: "POST",
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(reqBody)
@@ -81,6 +86,7 @@ export const BottomNavBar = () => {
             if(!data)
                 throw "Error"
             
+            if(oldData.length === 0) setOldData(data);
             setData(data);
 
         } catch(error) {
@@ -228,7 +234,7 @@ export const BottomNavBar = () => {
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {
-                                                    data.map((item:{starttime: string})=> {
+                                                    oldData.map((item:{starttime: string})=> {
                                                         const newDate = getTimestamp(item.starttime);
                                                         return(
                                                             <SelectItem value={item.starttime}>{newDate}</SelectItem>
