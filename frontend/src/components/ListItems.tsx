@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card"
 import { Button } from "./ui/button"
 import { PiRocketLaunchFill } from "react-icons/pi";
+import { useRouter, usePathname } from 'next/navigation'
 
 interface EventsProp {
   event: {
@@ -17,9 +18,13 @@ interface EventsProp {
   }
 }
 
-const ListItems = ( {event} : EventsProp) => {
+const ListItems = ( {event} : any) => {
   const [filename, setFilename] = useState(event.filename)
   const dateTime = getTimestamp();
+  const router = useRouter()
+  const pathname = usePathname();
+
+  const isMoon = pathname.includes("/moon");
 
   window.matchMedia("(max-width: 768px)").addEventListener('change', e => {
     setFilename(displayFilename(event.filename, 20))
@@ -30,6 +35,14 @@ const ListItems = ( {event} : EventsProp) => {
     const d = new Date(event.starttime);
     
     return `${pad(d.getFullYear(),4)}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+
+  function handleSelectItem() {
+    sessionStorage.setItem("eventData", JSON.stringify(event));
+    if(isMoon)
+      router.push('/moon/event');
+    else
+      router.push('/mars/event');
   }
 
   function displayFilename(fullName: string, maximumSize: number){
@@ -45,14 +58,14 @@ const ListItems = ( {event} : EventsProp) => {
   };
 
   return (
-    <Card key={event.id} className="px-2 mt-2 bg-[#011221] border-none">
+    <Card key={event.id} className="px-2 mt-2 bg-[#011221] border-none" onClick={()=> handleSelectItem()}>
       <CardHeader className="flex flex-row text-start pr-2 pb-2 pt-2 pb-2 justify-between">
           <div className="items-center pl-4 pr-1">
               <CardTitle className="text-white text-md md:text-lg">{dateTime} - {event.station}</CardTitle>
               <CardDescription><p>{filename}</p></CardDescription>
           </div>
           <div className="flex items-center">
-            <Button 
+            <Button onClick={()=> handleSelectItem()}
                 className="px-4 py-4 bg-gradient-to-t from-[#4670DA] via-[#0AA9FA] to-[#00B2FF] hover:shadow-[0_14px_20px_rgba(41,140,234,0.5)] transition-all tracking-wide text-md"
               >
                 <PiRocketLaunchFill className="w-5 h-5" />

@@ -18,15 +18,12 @@ interface CelestialInfoCardProps {
     };
 }
 
-const CelestialInfoCard = ({ title, description, info }: CelestialInfoCardProps) => {
+const CelestialInfoCard = ({ title, info }: CelestialInfoCardProps) => {
   return (
     <>
         <Card className="backdrop-blur-sm bg-[#01122150] text-white p-4 w-96 max-w-96 min-h-96 h-1/2 m-auto rounded-lg border border-[#011221] shadow-[0_0px_20px_rgba(41,140,234,0.4)]">
             <CardHeader className="text-center">
                 <CardTitle className="text-[#ffffff] text-md">{title}</CardTitle>
-                <CardDescription>
-                    {description}
-                </CardDescription>
             </CardHeader>
             <CardContent className="text-sm">
                 <ol>
@@ -73,15 +70,12 @@ const CelestialInfoCard = ({ title, description, info }: CelestialInfoCardProps)
   )
 }
 
-const CelestialModelInfoCard = ({ title, description, info }: CelestialInfoCardProps) => {
+const CelestialModelInfoCard = ({ title, info }: CelestialInfoCardProps) => {
     return (
       <>
           <Card className="bg-[#011221a9] text-white border border-white p-4 w-96 max-w-96 min-h-96 h-1/2 m-auto">
               <CardHeader className="text-start text-lg">
                   <CardTitle className="text-white">{title}</CardTitle>
-                  <CardDescription>
-                      {description}
-                  </CardDescription>
               </CardHeader>
               <CardContent className="pt-1 text-sm">
                   <ol>

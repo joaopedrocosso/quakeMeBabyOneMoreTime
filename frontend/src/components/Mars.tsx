@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client'
 import { useTexture, Sphere, useGLTF, SpotLight } from '@react-three/drei';
 import { useFrame, useThree } from "@react-three/fiber";
