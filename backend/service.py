@@ -1,4 +1,5 @@
 import copy
+import json
 from io import StringIO
 import wave
 from data_predict import predict
@@ -51,7 +52,9 @@ def process_event(upload_event: object, content: bytes, sampling_rate: float):
 
     content_bytes = BytesIO(content).read()
 
-    return save_event(upload_event, content_bytes, bool(previsao.y_pred.values[0]), wav_bytes, sampling_rate), FileResponse(path="./", media_type='audio/mpeg', filename=upload_event.filename +'.wav')
+    ypred = json.loads(json.loads(previsao.to_json())['features']['0'])['y_pred']
+
+    return save_event(upload_event, content_bytes, bool(ypred), wav_bytes, sampling_rate), FileResponse(path="./", media_type='audio/mpeg', filename=upload_event.filename +'.wav')
 
 
 def listen_event(event_id: int):
