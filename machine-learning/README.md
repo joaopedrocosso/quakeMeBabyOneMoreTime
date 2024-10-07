@@ -1,4 +1,6 @@
 # Readme for the Machine Learning steps
+## Required Libraries for Notebook Execution are listed in the requirements.txt file:
+- We used: pandas, numpy, obspy, tensorflow, keras, scikit-learn
 
 ## Folder Structure of the Machine Learning Tab
 - example_data: Contains an example of a csv and mseed that we used. For the total data used in model training, we concatenated all the csv/mseed files from the "Training" folder, generating a table of about 17-19GB, which could not be directly uploaded.
