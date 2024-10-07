@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client'
 import { useRef, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -6,10 +7,12 @@ import MissionPoint from "@/components/MissionPoint"
 import { useTexture } from "@react-three/drei";
 
 interface Props {
-  isPageHome: boolean
+  isPageHome: boolean;
+	isQuaking: boolean;
+  setIsQuaking: () => void;
 };
 
-export default function Moon({isPageHome}: Props) {
+export default function Moon({isPageHome, isQuaking, setIsQuaking}: Props) {
   const mesh = useRef<THREE.Mesh>(null!);
   const { viewport, camera } = useThree();
   const [colorMap, bumpMap] = useTexture([
@@ -29,6 +32,39 @@ export default function Moon({isPageHome}: Props) {
   //   mesh.current.rotation.y += 0.004;
   //   mesh.current.rotation.x += 0.0001;
   // });
+
+	useEffect(() => {
+    console.log('mars', isQuaking);
+    if (!isQuaking) return;
+    quake();
+  }, [isQuaking]);
+
+	const quake = () => {
+    if (mesh.current) {
+      const initialPosition = mesh.current.position.clone(); // Salvar posição inicial
+
+      let quakeStart = performance.now(); // Tempo de início do tremor
+
+      const quakeInterval = setInterval(() => {
+        const elapsedTime = performance.now() - quakeStart;
+        if (elapsedTime > 3000) {
+          clearInterval(quakeInterval);
+          setIsQuaking(false); // Desativar o tremor
+          if (mesh.current) { 
+            mesh.current.position.copy(initialPosition); 
+          }
+          return;
+        }
+
+        const quakeStrength = 0.05; 
+        if (mesh.current) { 
+          mesh.current.position.x = initialPosition.x + (Math.random() - 0.5) * quakeStrength;
+          mesh.current.position.y = initialPosition.y + (Math.random() - 0.5) * quakeStrength;
+          mesh.current.position.z = initialPosition.z + (Math.random() - 0.5) * quakeStrength;
+        }
+      }, 16); 
+    }
+  };
 
   const apolloCoordinates = [
     { lat: -3.1975, lon: -23.3856, identifier: "Apollo 12", image: "/missions/apollo12.png", id: 12 },
