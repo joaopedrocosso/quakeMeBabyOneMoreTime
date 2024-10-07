@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, LargeBinary, BigInteger, JSON, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey, LargeBinary, BigInteger, JSON, Boolean, \
+    Sequence
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -16,9 +17,9 @@ class Catalog(Base):
     starttime = Column(DateTime)
     endtime = Column(DateTime)
     sampling_rate = Column(Float)
-    identified_arrival_time_rel = Column(Float)
-    detection_duration = Column(Float)
-    selection_duration = Column(Float)
+    identified_arrival_time_rel = Column(String)
+    detection_duration = Column(String)
+    selection_duration = Column(String)
     file_original_size = Column(String)
     file_selection_size = Column(String)
     original_broadcast = Column(String)
@@ -35,11 +36,14 @@ class Data(Base):
     time_rel = Column(String)
     velocity = Column(String)
     event = Column(Boolean)
-    # catalog_id = Column(Integer)
+    catalog_id = Column(Integer)
+
+
+seq_user_event_id = Sequence('seq_user_event_id', start=1, increment=1)
 
 class UserEvent(Base):
     __tablename__ = 'user_event'
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id = Column(BigInteger, seq_user_event_id, primary_key=True, autoincrement=True)
     filename = Column(String)
     sampling_rate = Column(Float)
     content = Column(LargeBinary)

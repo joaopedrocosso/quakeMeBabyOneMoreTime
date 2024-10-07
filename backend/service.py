@@ -21,18 +21,20 @@ def list_events(filter: list):
     event_filter = EventFilter(**dict(filter))
     return repository.list_events(event_filter)
 
-def get_event(event_id: str):
-    return repository.get_event_by_id(event_id)
+def get_event(event_id: int):
+    event = repository.get_event_by_id(event_id)
+    handle_audio(event)
+    return event
 
 def list_user_events(filter: list):
     event_filter = EventFilter(**dict(filter))
     return repository.list_user_events(event_filter)
 
-def get_user_event(event_id: str):
+def get_user_event(event_id: int):
     return repository.get_user_event_by_id(event_id)
 
-def save_event(upload_event: object, content: bytes, result: str, audio: bytes):
-    repository.save_event(upload_event, content, result, audio)
+def save_event(upload_event: object, content: bytes, result: bool, audio: bytes, sampling_rate: float):
+    return repository.save_event(upload_event, content, result, audio, sampling_rate)
 
 def process_event(upload_event: object, content: bytes, sampling_rate: float):
     from io import BytesIO
@@ -47,17 +49,37 @@ def process_event(upload_event: object, content: bytes, sampling_rate: float):
     with open(upload_event.filename + '.wav', 'rb') as file:
                 wav_bytes = file.read()
 
-    return save_event(upload_event, BytesIO(content), bool(previsao.y_pred), wav_bytes), FileResponse(path="./", media_type='audio/mpeg', filename=upload_event.filename +'.wav')
+    content_bytes = BytesIO(content).read()
+
+    return save_event(upload_event, content_bytes, bool(previsao.y_pred.values[0]), wav_bytes, sampling_rate), FileResponse(path="./", media_type='audio/mpeg', filename=upload_event.filename +'.wav')
 
 
-def listen_event(event_id: str):
+def listen_event(event_id: int):
     event = get_event(event_id)
     print(event)
 
+    handle_audio(event)
+
+    file_path = f"./{event.filename}.wav"
+    return FileResponse(path=file_path, media_type='audio/mpeg', filename=event.filename +'.wav')
+
+
+def listen_user_event(user_event_id: int):
+    event = get_user_event(user_event_id)
+    print(event)
+
+    with open(event.filename + '.wav', mode='wb') as f:
+        f.write(event.audio)
+
+    file_path = f"./{event.filename}.wav"
+    return FileResponse(path=file_path, media_type='audio/mpeg', filename=event.filename +'.wav')
+
+
+def handle_audio(event):
     if event.audio is None:
 
         data_list = list_data([("evid", event.evid)])
-    
+
         convert_to_audio(event.filename, [float(d.velocity) for d in data_list])
 
         with wave.open(event.filename + ".wav", "rb") as wav_file:
@@ -65,10 +87,8 @@ def listen_event(event_id: str):
             repository.update_event(event, frames)
 
     else:
-         with open(event.filename +'.wav', mode='bx') as f:
+        with open(event.filename + '.wav', mode='wb') as f:
             f.write(event.audio)
-    
-    return FileResponse(path="./", media_type='audio/mpeg', filename=event.filename +'.wav')
 
 
 def convert_to_audio(filename: str, velocity: list[float]):
